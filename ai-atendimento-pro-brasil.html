@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Atendimento Pro Brasil — Blueprint de Arquitetura</title>
+  <style>
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --surface2: #22263a;
+      --border: #2e3248;
+      --accent: #d97706;
+      --accent2: #7c3aed;
+      --accent3: #0ea5e9;
+      --green: #10b981;
+      --red: #ef4444;
+      --yellow: #f59e0b;
+      --text: #e2e8f0;
+      --muted: #8892a4;
+      --code-bg: #131720;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    /* HERO */
+    .hero {
+      background: linear-gradient(135deg, #1a0533 0%, #0f1117 40%, #001a2e 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 60px 40px 50px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -80px; left: 50%; transform: translateX(-50%);
+      width: 600px; height: 300px;
+      background: radial-gradient(ellipse, rgba(124,58,237,0.18) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-badge {
+      display: inline-block;
+      background: rgba(124,58,237,0.2);
+      border: 1px solid rgba(124,58,237,0.4);
+      color: #c084fc;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 4px 14px;
+      border-radius: 20px;
+      margin-bottom: 20px;
+    }
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      margin-bottom: 16px;
+    }
+    .hero h1 span { color: var(--accent); }
+    .hero p {
+      color: var(--muted);
+      font-size: 1.1rem;
+      max-width: 640px;
+      margin: 0 auto;
+    }
+    .hero-stats {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 28px;
+    }
+    .hero-stat {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 22px;
+      min-width: 140px;
+    }
+    .hero-stat .v { font-size: 1.4rem; font-weight: 800; color: var(--text); }
+    .hero-stat .l { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+
+    /* LAYOUT */
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+    /* NAV INDEX */
+    .toc {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 28px 32px;
+      margin: 40px auto;
+      max-width: 1100px;
+      margin-left: 24px;
+      margin-right: 24px;
+    }
+    @media(min-width:640px){ .toc { margin-left: auto; margin-right: auto; } }
+    .toc h2 { font-size: 0.9rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 16px; }
+    .toc-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 10px;
+    }
+    .toc-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      text-decoration: none;
+      color: var(--text);
+      font-size: 0.9rem;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .toc-item:hover { border-color: var(--accent2); background: rgba(124,58,237,0.08); }
+    .toc-item .icon { font-size: 1.1rem; }
+    .toc-item .num { font-size: 0.72rem; color: var(--muted); font-weight: 600; }
+
+    /* SECTIONS */
+    section {
+      max-width: 1100px;
+      margin: 0 auto 48px;
+      padding: 0 24px;
+    }
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .section-icon {
+      width: 44px; height: 44px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem;
+      flex-shrink: 0;
+    }
+    .icon-orange { background: rgba(217,119,6,0.15); border: 1px solid rgba(217,119,6,0.3); }
+    .icon-purple { background: rgba(124,58,237,0.15); border: 1px solid rgba(124,58,237,0.3); }
+    .icon-blue   { background: rgba(14,165,233,0.15); border: 1px solid rgba(14,165,233,0.3); }
+    .icon-green  { background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.3); }
+    .icon-red    { background: rgba(239,68,68,0.15);  border: 1px solid rgba(239,68,68,0.3);  }
+    .icon-yellow { background: rgba(245,158,11,0.15); border: 1px solid rgba(245,158,11,0.3); }
+
+    .section-header h2 { font-size: 1.5rem; font-weight: 700; }
+    .section-header p  { color: var(--muted); font-size: 0.9rem; margin-top: 2px; }
+
+    .subhead {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin: 28px 0 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* CARDS GRID */
+    .grid { display: grid; gap: 16px; }
+    .grid-2 { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+    .grid-3 { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 24px;
+      transition: border-color 0.2s;
+    }
+    .card:hover { border-color: #3d4260; }
+    .card h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 8px; }
+    .card p  { color: var(--muted); font-size: 0.875rem; }
+    .card ul { color: var(--muted); font-size: 0.85rem; margin: 8px 0 0 18px; }
+    .card ul li { margin-bottom: 3px; }
+
+    /* CODE BLOCKS */
+    pre {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px 20px;
+      overflow-x: auto;
+      font-size: 0.85rem;
+      line-height: 1.6;
+      font-family: 'Fira Code', 'Cascadia Code', monospace;
+    }
+    code {
+      font-family: 'Fira Code', 'Cascadia Code', monospace;
+      font-size: 0.82rem;
+    }
+    .inline-code {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      padding: 2px 7px;
+      border-radius: 5px;
+      font-size: 0.82rem;
+      color: #a78bfa;
+    }
+
+    /* COMMAND TABLE */
+    .cmd-table { width: 100%; border-collapse: collapse; }
+    .cmd-table th {
+      text-align: left;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .cmd-table td {
+      padding: 11px 16px;
+      border-bottom: 1px solid rgba(46,50,72,0.5);
+      font-size: 0.875rem;
+      vertical-align: top;
+    }
+    .cmd-table tr:last-child td { border-bottom: none; }
+    .cmd-table tr:hover td { background: rgba(255,255,255,0.02); }
+    .cmd-table .cmd { color: #67e8f9; font-family: 'Fira Code', monospace; font-size: 0.8rem; }
+    .cmd-table .desc { color: var(--muted); }
+    .table-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    /* FILE TREE */
+    .file-tree {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 24px;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.85rem;
+      line-height: 2;
+    }
+    .ft-dir   { color: #93c5fd; }
+    .ft-file  { color: #d4d4d8; }
+    .ft-spec  { color: #a78bfa; }
+    .ft-env   { color: #fbbf24; }
+    .ft-doc   { color: #34d399; }
+    .ft-comment { color: #475569; }
+
+    /* TIPS */
+    .tip {
+      display: flex;
+      gap: 14px;
+      padding: 16px 20px;
+      border-radius: 10px;
+      margin-bottom: 12px;
+      border: 1px solid;
+    }
+    .tip-icon { font-size: 1.2rem; flex-shrink: 0; margin-top: 1px; }
+    .tip-body h4 { font-size: 0.9rem; font-weight: 700; margin-bottom: 4px; }
+    .tip-body p  { font-size: 0.85rem; color: var(--muted); }
+    .tip-green  { background: rgba(16,185,129,0.07);  border-color: rgba(16,185,129,0.25);  }
+    .tip-yellow { background: rgba(245,158,11,0.07);  border-color: rgba(245,158,11,0.25);  }
+    .tip-blue   { background: rgba(14,165,233,0.07);  border-color: rgba(14,165,233,0.25);  }
+    .tip-red    { background: rgba(239,68,68,0.07);   border-color: rgba(239,68,68,0.25);   }
+    .tip-purple { background: rgba(124,58,237,0.07);  border-color: rgba(124,58,237,0.25);  }
+
+    /* BADGE */
+    .badge {
+      display: inline-block;
+      padding: 2px 9px;
+      border-radius: 12px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+    }
+    .badge-green  { background: rgba(16,185,129,0.15);  color: #34d399; }
+    .badge-yellow { background: rgba(245,158,11,0.15);  color: #fbbf24; }
+    .badge-blue   { background: rgba(14,165,233,0.15);  color: #38bdf8; }
+    .badge-purple { background: rgba(124,58,237,0.15);  color: #a78bfa; }
+    .badge-red    { background: rgba(239,68,68,0.15);   color: #f87171; }
+
+    /* LAYER STACK */
+    .layer {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 20px;
+      margin-bottom: 8px;
+    }
+    .layer-num {
+      width: 30px; height: 30px;
+      flex-shrink: 0;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800;
+      font-size: 0.85rem;
+      background: rgba(124,58,237,0.15);
+      color: #a78bfa;
+      border: 1px solid rgba(124,58,237,0.3);
+    }
+    .layer-body h4 { font-size: 0.92rem; font-weight: 700; }
+    .layer-body p  { font-size: 0.82rem; color: var(--muted); }
+    .flow-arrow { text-align: center; color: var(--muted); font-size: 0.9rem; margin: 2px 0; }
+
+    /* STEP */
+    .step {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 14px;
+    }
+    .step-num {
+      width: 36px; height: 36px;
+      flex-shrink: 0;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800;
+      background: rgba(217,119,6,0.15);
+      color: var(--accent);
+      border: 1px solid rgba(217,119,6,0.35);
+    }
+    .step-body { flex: 1; }
+    .step-body h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 3px; }
+    .step-body p  { font-size: 0.85rem; color: var(--muted); }
+
+    /* DIVIDER */
+    hr { border: none; border-top: 1px solid var(--border); margin: 48px 0; }
+
+    /* FOOTER */
+    footer {
+      text-align: center;
+      padding: 40px 24px;
+      color: var(--muted);
+      font-size: 0.83rem;
+      border-top: 1px solid var(--border);
+    }
+    footer strong { color: var(--text); }
+
+    /* SCROLLBAR */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  </style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">Blueprint de Arquitetura</div>
+  <h1>AI <span>Atendimento Pro</span> Brasil</h1>
+  <p>Infraestrutura de agentes de IA para automatizar atendimento, qualificação de leads, agendamento e follow-up de PMEs brasileiras via WhatsApp — projetada como Funcionário Digital, não chatbot.</p>
+  <div class="hero-stats">
+    <div class="hero-stat"><div class="v">R$ 2.997</div><div class="l">Setup único</div></div>
+    <div class="hero-stat"><div class="v">R$ 997/mês</div><div class="l">Recorrente</div></div>
+    <div class="hero-stat"><div class="v">30 clientes</div><div class="l">Meta em 3 meses</div></div>
+    <div class="hero-stat"><div class="v">&lt; 2h</div><div class="l">Onboarding</div></div>
+  </div>
+</div>
+
+<!-- ÍNDICE -->
+<div class="toc container">
+  <h2>Índice</h2>
+  <div class="toc-grid">
+    <a href="#visao"        class="toc-item"><span class="icon">🎯</span><span><span class="num">01 —</span> Visão & Modelo de Negócio</span></a>
+    <a href="#arquitetura"  class="toc-item"><span class="icon">🏗️</span><span><span class="num">02 —</span> Arquitetura em 7 Camadas</span></a>
+    <a href="#modulos"      class="toc-item"><span class="icon">🧩</span><span><span class="num">03 —</span> Módulos Funcionais</span></a>
+    <a href="#stack"        class="toc-item"><span class="icon">🔌</span><span><span class="num">04 —</span> Stack & Integrações</span></a>
+    <a href="#multitenant"  class="toc-item"><span class="icon">🏢</span><span><span class="num">05 —</span> Multi-Tenant & Isolamento</span></a>
+    <a href="#inteligencia" class="toc-item"><span class="icon">🧠</span><span><span class="num">06 —</span> Memória & Motor de Decisão</span></a>
+    <a href="#monitoramento" class="toc-item"><span class="icon">📊</span><span><span class="num">07 —</span> Dashboard & Logging</span></a>
+    <a href="#seguranca"    class="toc-item"><span class="icon">🔐</span><span><span class="num">08 —</span> Segurança & Requisitos</span></a>
+    <a href="#blueprint"    class="toc-item"><span class="icon">🚀</span><span><span class="num">09 —</span> Blueprint dos 10 Clientes</span></a>
+    <a href="#roadmap"      class="toc-item"><span class="icon">⏱️</span><span><span class="num">10 —</span> Onboarding &amp; Roadmap SaaS</span></a>
+  </div>
+</div>
+
+<!-- ─── 01 VISÃO ─── -->
+<section id="visao">
+  <div class="section-header">
+    <div class="section-icon icon-orange">🎯</div>
+    <div><h2>01 — Visão & Modelo de Negócio</h2><p>O objetivo não é uma automação — é a fundação de uma Vertical AI Company</p></div>
+  </div>
+
+  <div class="tip tip-purple">
+    <span class="tip-icon">🧠</span>
+    <div class="tip-body">
+      <h4>Princípio central: infraestrutura replicável</h4>
+      <p>O sistema opera como um <strong>Funcionário Digital</strong> padronizado. Cada cliente recebe a mesma arquitetura — só os dados de configuração mudam. Isso transforma "vender um chatbot" em "operar uma plataforma".</p>
+    </div>
+  </div>
+
+  <div class="subhead">💰 Modelo de receita</div>
+  <div class="grid grid-3" style="margin-bottom:20px;">
+    <div class="card">
+      <h3>Implementação</h3>
+      <p><strong style="color:var(--text);">R$ 2.997</strong> taxa única de setup. Cobre onboarding, configuração de prompts do nicho e ativação.</p>
+    </div>
+    <div class="card">
+      <h3>Recorrência</h3>
+      <p><strong style="color:var(--text);">R$ 997/mês</strong> — infraestrutura, hospedagem, manutenção, monitoramento, otimização contínua e suporte.</p>
+    </div>
+    <div class="card">
+      <h3>Projeção</h3>
+      <p>30 clientes ativos = <strong style="color:var(--green);">~R$ 29,9k/mês</strong> recorrente + receita de setups. Margem alta por reuso de templates.</p>
+    </div>
+  </div>
+
+  <div class="subhead">🏥 Mercado-alvo</div>
+  <div class="grid grid-3" style="margin-bottom:20px;">
+    <div class="card"><h3>Clínicas</h3><p>Odontológicas, estéticas e consultórios médicos — alto volume de leads diários.</p></div>
+    <div class="card"><h3>Serviços profissionais</h3><p>Escritórios de advocacia e prestadores de serviço com agenda cheia.</p></div>
+    <div class="card"><h3>Imobiliárias</h3><p>Recebem leads por WhatsApp e perdem receita por demora na resposta.</p></div>
+  </div>
+
+  <div class="tip tip-blue">
+    <span class="tip-icon">📌</span>
+    <div class="tip-body">
+      <h4>Dor que o produto resolve</h4>
+      <p>Negócios locais perdem receita por <strong>resposta lenta</strong>, falta de qualificação e agendamento manual. O agente responde em segundos, 24/7, qualifica e agenda sozinho.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── 02 ARQUITETURA ─── -->
+<section id="arquitetura">
+  <div class="section-header">
+    <div class="section-icon icon-purple">🏗️</div>
+    <div><h2>02 — Arquitetura em 7 Camadas</h2><p>Sistema modular multi-tenant orquestrado pelo N8N</p></div>
+  </div>
+
+  <p style="color:var(--muted);font-size:.88rem;margin-bottom:16px;">O fluxo de uma mensagem percorre as camadas de cima para baixo. Cada camada é desacoplada e substituível.</p>
+
+  <div class="layer">
+    <div class="layer-num">1</div>
+    <div class="layer-body"><h4>Camada de Comunicação</h4><p>Recebe e envia mensagens via WhatsApp (webhook). Texto, áudio e imagem em tempo real.</p></div>
+  </div>
+  <div class="flow-arrow">▼</div>
+  <div class="layer">
+    <div class="layer-num">2</div>
+    <div class="layer-body"><h4>Camada de Processamento de IA</h4><p>Transcreve áudio, interpreta imagem e normaliza tudo em texto + contexto da conversa.</p></div>
+  </div>
+  <div class="flow-arrow">▼</div>
+  <div class="layer">
+    <div class="layer-num">3</div>
+    <div class="layer-body"><h4>Motor de Decisão</h4><p>Classifica intenção e estágio do lead, aplica regras configuráveis por cliente e escolhe a ação.</p></div>
+  </div>
+  <div class="flow-arrow">▼</div>
+  <div class="layer">
+    <div class="layer-num">4</div>
+    <div class="layer-body"><h4>Camada de Automação</h4><p>Executa: gerar resposta, agendar, enviar mídia, registrar lead no CRM ou escalar para humano.</p></div>
+  </div>
+  <div class="flow-arrow">▼</div>
+  <div class="layer">
+    <div class="layer-num">5</div>
+    <div class="layer-body"><h4>Camada de Armazenamento</h4><p>Memória persistente, histórico, agendamentos e dados do cliente — isolados por tenant.</p></div>
+  </div>
+  <div class="flow-arrow">▼</div>
+  <div class="layer">
+    <div class="layer-num">6</div>
+    <div class="layer-body"><h4>Camada de Monitoramento</h4><p>Coleta logs, métricas, erros e tempos de resposta para o dashboard do operador.</p></div>
+  </div>
+  <div class="flow-arrow">▼</div>
+  <div class="layer">
+    <div class="layer-num">7</div>
+    <div class="layer-body"><h4>Camada de Controle do Operador</h4><p>Dashboard interno: visão de todos os clientes, alertas e gestão centralizada.</p></div>
+  </div>
+
+  <div class="tip tip-green" style="margin-top:20px;">
+    <span class="tip-icon">✅</span>
+    <div class="tip-body">
+      <h4>Por que N8N como orquestrador</h4>
+      <p>Workflows visuais e versionáveis, fácil duplicação de templates, conectores prontos para APIs e webhooks. Permite clonar a operação de um cliente para o próximo sem reconstruir lógica.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── 03 MÓDULOS ─── -->
+<section id="modulos">
+  <div class="section-header">
+    <div class="section-icon icon-blue">🧩</div>
+    <div><h2>03 — Módulos Funcionais</h2><p>Os 12 blocos que compõem o Funcionário Digital</p></div>
+  </div>
+
+  <div class="grid grid-2">
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+        <span class="badge badge-blue">01</span><h3 style="margin:0;">Comunicação WhatsApp</h3>
+      </div>
+      <p>Recebe mensagens em tempo real, processa texto, transcreve áudio, interpreta imagens e mantém o contexto da conversa. Pronto para provedores de WhatsApp API.</p>
+    </div>
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+        <span class="badge badge-blue">02</span><h3 style="margin:0;">Motor de Entendimento</h3>
+      </div>
+      <p>Identifica intenção, estágio do lead, urgência, interesse de serviço e se é cliente existente ou novo lead.</p>
+    </div>
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+        <span class="badge badge-blue">03</span><h3 style="margin:0;">Memória de Conversa</h3>
+      </div>
+      <p>Memória persistente: nome do cliente, interações anteriores, serviços solicitados, histórico de agendamentos e preferências. Persiste entre sessões.</p>
+    </div>
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+        <span class="badge badge-blue">04</span><h3 style="margin:0;">Motor de Decisão</h3>
+      </div>
+      <p>Decide automaticamente: responder, qualificar, enviar mídia, propor horários, escalar para humano ou registrar lead. Regras configuráveis por cliente.</p>
+    </div>
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+        <span class="badge badge-blue">05</span><h3 style="margin:0;">Gerador de Respostas Humanas</h3>
+      </div>
+      <p>Português brasileiro natural, sem padrões robóticos, tom adaptado ao nicho, com continuidade conversacional de recepcionista profissional.</p>
+    </div>
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+        <span class="badge badge-blue">06</span><h3 style="margin:0;">Voz com IA (ElevenLabs)</h3>
+      </div>
+      <p>Converte respostas em áudio natural, envia respostas em voz e permite identidade de voz específica por cliente.</p>
+    </div>
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+        <span class="badge badge-blue">07</span><h3 style="margin:0;">Automação de Agendamento</h3>
+      </div>
+      <p>Integra Google Calendar: verifica disponibilidade, sugere horários, confirma, evita conflitos e envia confirmações automáticas.</p>
+    </div>
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+        <span class="badge badge-blue">08</span><h3 style="margin:0;">Automação de CRM</h3>
+      </div>
+      <p>Cria leads, atualiza status do pipeline, registra conversas, dispara follow-ups e sincroniza com planilhas ou ferramentas de CRM.</p>
+    </div>
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+        <span class="badge badge-blue">09</span><h3 style="margin:0;">Follow-Up Automático</h3>
+      </div>
+      <p>Lead inativo recebe lembretes automáticos, campanhas de reengajamento e recuperação de conversas abandonadas.</p>
+    </div>
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+        <span class="badge badge-red">10</span><h3 style="margin:0;">Gestão Multi-Cliente</h3>
+      </div>
+      <p><strong style="color:var(--text);">Crítico.</strong> Isolamento de clientes, templates reutilizáveis, controle centralizado e onboarding rápido (&lt; 2h).</p>
+    </div>
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+        <span class="badge badge-blue">11</span><h3 style="margin:0;">Dashboard de Monitoramento</h3>
+      </div>
+      <p>Painel interno do operador: clientes ativos, conversas processadas, taxa de sucesso, falhas e alertas. Base do futuro SaaS.</p>
+    </div>
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+        <span class="badge badge-blue">12</span><h3 style="margin:0;">Sistema de Logging</h3>
+      </div>
+      <p>Registra mensagens recebidas, decisões da IA, execuções de automação, erros e tempos de resposta. Debug por cliente.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── 04 STACK ─── -->
+<section id="stack">
+  <div class="section-header">
+    <div class="section-icon icon-green">🔌</div>
+    <div><h2>04 — Stack Técnica & Integrações</h2><p>Componentes externos e o que cada um resolve</p></div>
+  </div>
+
+  <div class="table-wrap" style="margin-bottom:20px;">
+    <table class="cmd-table">
+      <thead>
+        <tr><th>Componente</th><th>Função no sistema</th><th>Camada</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="cmd">N8N</td><td class="desc">Orquestração de workflows e automações</td><td><span class="badge badge-purple">Decisão/Automação</span></td></tr>
+        <tr><td class="cmd">WhatsApp API</td><td class="desc">Recepção e envio de mensagens (webhook)</td><td><span class="badge badge-blue">Comunicação</span></td></tr>
+        <tr><td class="cmd">LLM (interpretação)</td><td class="desc">Classificação de intenção e geração de respostas</td><td><span class="badge badge-blue">Processamento IA</span></td></tr>
+        <tr><td class="cmd">Transcrição de áudio</td><td class="desc">Converte áudios de WhatsApp em texto</td><td><span class="badge badge-blue">Processamento IA</span></td></tr>
+        <tr><td class="cmd">ElevenLabs</td><td class="desc">Síntese de voz para respostas em áudio</td><td><span class="badge badge-blue">Processamento IA</span></td></tr>
+        <tr><td class="cmd">Google Calendar</td><td class="desc">Disponibilidade e confirmação de agendamentos</td><td><span class="badge badge-green">Automação</span></td></tr>
+        <tr><td class="cmd">CRM / Planilhas</td><td class="desc">Pipeline de leads e registro de conversas</td><td><span class="badge badge-green">Automação</span></td></tr>
+        <tr><td class="cmd">Banco de dados</td><td class="desc">Memória persistente e dados por tenant</td><td><span class="badge badge-yellow">Armazenamento</span></td></tr>
+        <tr><td class="cmd">Dashboard interno</td><td class="desc">Painel de monitoramento do operador</td><td><span class="badge badge-red">Controle</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="tip tip-yellow">
+    <span class="tip-icon">⚠️</span>
+    <div class="tip-body">
+      <h4>Requisito de latência</h4>
+      <p>O caminho recepção → IA → resposta deve ficar <strong>abaixo de 10 segundos</strong>. Transcrição de áudio e síntese de voz são os gargalos — execute-os de forma assíncrona quando possível.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── 05 MULTI-TENANT ─── -->
+<section id="multitenant">
+  <div class="section-header">
+    <div class="section-icon icon-yellow">🏢</div>
+    <div><h2>05 — Multi-Tenant & Isolamento</h2><p>O módulo crítico: a mesma arquitetura para todos, dados separados</p></div>
+  </div>
+
+  <div class="grid grid-2" style="margin-bottom:20px;">
+    <div>
+      <p style="color:var(--muted);font-size:.85rem;margin-bottom:10px;">Estrutura de configuração por cliente</p>
+      <div class="file-tree">
+<span class="ft-dir">clientes/</span>
+├── <span class="ft-dir">clinica-sorriso/</span>
+│   ├── <span class="ft-spec">config.json</span>      <span class="ft-comment"># dados do negócio</span>
+│   ├── <span class="ft-doc">prompt-nicho.md</span>   <span class="ft-comment"># prompt do nicho</span>
+│   ├── <span class="ft-file">servicos.json</span>     <span class="ft-comment"># lista de serviços</span>
+│   ├── <span class="ft-file">horarios.json</span>     <span class="ft-comment"># agenda</span>
+│   └── <span class="ft-env">credenciais.env</span>    <span class="ft-comment"># chaves (não commitar)</span>
+├── <span class="ft-dir">advocacia-lima/</span>
+│   └── <span class="ft-comment">... mesma estrutura</span>
+└── <span class="ft-dir">_template/</span>          <span class="ft-comment"># modelo base p/ clonar</span>
+      </div>
+    </div>
+    <div>
+      <p style="color:var(--muted);font-size:.85rem;margin-bottom:10px;">Exemplo de config.json de um tenant</p>
+      <pre style="font-size:.76rem;"><code>{
+  <span style="color:#67e8f9">"tenant_id"</span>: <span style="color:#a78bfa">"clinica-sorriso"</span>,
+  <span style="color:#67e8f9">"nicho"</span>: <span style="color:#a78bfa">"clinica_odontologica"</span>,
+  <span style="color:#67e8f9">"nome_negocio"</span>: <span style="color:#a78bfa">"Clínica Sorriso"</span>,
+  <span style="color:#67e8f9">"tom_de_voz"</span>: <span style="color:#a78bfa">"acolhedor"</span>,
+  <span style="color:#67e8f9">"voz_elevenlabs_id"</span>: <span style="color:#a78bfa">"xyz123"</span>,
+  <span style="color:#67e8f9">"calendar_id"</span>: <span style="color:#a78bfa">"sorriso@grupo.com"</span>,
+  <span style="color:#67e8f9">"escalar_humano"</span>: {
+    <span style="color:#67e8f9">"numero"</span>: <span style="color:#a78bfa">"+55..."</span>,
+    <span style="color:#67e8f9">"intencoes"</span>: [<span style="color:#a78bfa">"cancelamento"</span>]
+  }
+}</code></pre>
+    </div>
+  </div>
+
+  <div class="grid grid-3">
+    <div class="card">
+      <h3>🔒 Isolamento de dados</h3>
+      <p>Cada tenant tem ambiente de dados separado. Nenhuma conversa, lead ou memória cruza de um cliente para outro.</p>
+    </div>
+    <div class="card">
+      <h3>♻️ Templates reutilizáveis</h3>
+      <p>Workflows N8N genéricos lêem o <span class="inline-code">tenant_id</span> e carregam a configuração certa em runtime — sem duplicar lógica.</p>
+    </div>
+    <div class="card">
+      <h3>🎛️ Controle centralizado</h3>
+      <p>Atualizar o template base propaga melhorias para todos os clientes ao mesmo tempo.</p>
+    </div>
+  </div>
+
+  <div class="tip tip-purple" style="margin-top:16px;">
+    <span class="tip-icon">🌟</span>
+    <div class="tip-body">
+      <h4>A regra de ouro do multi-tenant</h4>
+      <p>O workflow <strong>nunca</strong> contém dados de cliente. Tudo que muda entre clientes vive em arquivos de configuração. Implementar um cliente = clonar <span class="inline-code">_template/</span> e preencher o config.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── 06 INTELIGÊNCIA ─── -->
+<section id="inteligencia">
+  <div class="section-header">
+    <div class="section-icon icon-blue">🧠</div>
+    <div><h2>06 — Memória & Motor de Decisão</h2><p>Como o agente entende e decide</p></div>
+  </div>
+
+  <div class="subhead">🏷️ Categorias de intenção</div>
+  <div class="table-wrap" style="margin-bottom:24px;">
+    <table class="cmd-table">
+      <thead><tr><th>Intenção</th><th>Ação típica do motor de decisão</th></tr></thead>
+      <tbody>
+        <tr><td class="cmd">nova consulta</td><td class="desc">Saudar, qualificar e identificar interesse de serviço</td></tr>
+        <tr><td class="cmd">pedido de preço</td><td class="desc">Enviar faixa de valores / mídia e propor agendamento</td></tr>
+        <tr><td class="cmd">agendamento</td><td class="desc">Verificar Calendar, propor horários, confirmar</td></tr>
+        <tr><td class="cmd">remarcação</td><td class="desc">Localizar agendamento, liberar slot, oferecer novo horário</td></tr>
+        <tr><td class="cmd">cancelamento</td><td class="desc">Confirmar, liberar slot, atualizar CRM, escalar se preciso</td></tr>
+        <tr><td class="cmd">dúvida de suporte</td><td class="desc">Responder com base no contexto ou escalar para humano</td></tr>
+        <tr><td class="cmd">oportunidade de follow-up</td><td class="desc">Registrar lead e agendar reengajamento</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="grid grid-2">
+    <div>
+      <p style="color:var(--muted);font-size:.85rem;margin-bottom:10px;">O que a memória persistente guarda</p>
+      <div class="grid" style="gap:10px;">
+        <div class="tip tip-blue">
+          <span class="tip-icon">👤</span>
+          <div class="tip-body"><h4>Identidade</h4><p>Nome do cliente e se é lead novo ou cliente existente.</p></div>
+        </div>
+        <div class="tip tip-green">
+          <span class="tip-icon">🗂️</span>
+          <div class="tip-body"><h4>Histórico</h4><p>Interações anteriores, serviços solicitados e agendamentos.</p></div>
+        </div>
+        <div class="tip tip-purple">
+          <span class="tip-icon">⭐</span>
+          <div class="tip-body"><h4>Preferências</h4><p>Horários favoritos, tom preferido, canal de contato.</p></div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <p style="color:var(--muted);font-size:.85rem;margin-bottom:10px;">Ações possíveis do motor de decisão</p>
+      <div class="card">
+        <ul>
+          <li>Enviar resposta em texto ou voz</li>
+          <li>Fazer perguntas de qualificação</li>
+          <li>Enviar conteúdo de mídia (fotos, vídeos, tabela de preços)</li>
+          <li>Propor horários de agendamento</li>
+          <li>Escalar para um atendente humano</li>
+          <li>Registrar / atualizar o lead no CRM</li>
+        </ul>
+        <p style="margin-top:10px;">As regras que disparam cada ação são <strong style="color:var(--text);">configuráveis por cliente</strong> via config.json.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── 07 MONITORAMENTO ─── -->
+<section id="monitoramento">
+  <div class="section-header">
+    <div class="section-icon icon-purple">📊</div>
+    <div><h2>07 — Dashboard & Logging</h2><p>A camada que vira o futuro SaaS</p></div>
+  </div>
+
+  <div class="grid grid-2" style="margin-bottom:20px;">
+    <div class="card">
+      <h3>📊 Dashboard do Operador</h3>
+      <p>Painel interno para gerir toda a operação:</p>
+      <ul>
+        <li>Clientes ativos e inativos</li>
+        <li>Conversas processadas</li>
+        <li>Taxa de sucesso da IA</li>
+        <li>Execuções com falha</li>
+        <li>Métricas de uso</li>
+        <li>Alertas que exigem suporte</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>📝 Sistema de Logging</h3>
+      <p>Cada evento registrado, com debug isolado por cliente:</p>
+      <ul>
+        <li>Mensagens recebidas</li>
+        <li>Decisões tomadas pela IA</li>
+        <li>Execuções de automação</li>
+        <li>Erros e exceções</li>
+        <li>Tempos de resposta</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="tip tip-green">
+    <span class="tip-icon">🚀</span>
+    <div class="tip-body">
+      <h4>Decisão de arquitetura: o dashboard é a semente do SaaS</h4>
+      <p>Construa o dashboard interno já pensando em multi-usuário e métricas por tenant. Quando virar SaaS, basta expor uma visão filtrada para o próprio cliente — sem reescrever.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── 08 SEGURANÇA ─── -->
+<section id="seguranca">
+  <div class="section-header">
+    <div class="section-icon icon-red">🔐</div>
+    <div><h2>08 — Segurança & Requisitos Não-Funcionais</h2><p>O que mantém a operação confiável durante o crescimento</p></div>
+  </div>
+
+  <div class="grid grid-2" style="margin-bottom:20px;">
+    <div class="card">
+      <h3>🔐 Segurança</h3>
+      <ul>
+        <li>Acesso baseado em papéis (RBAC)</li>
+        <li>Armazenamento de dados criptografado</li>
+        <li>Comunicação segura entre APIs</li>
+        <li>Log de auditoria de ações sensíveis</li>
+        <li>Credenciais por tenant fora do versionamento</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>⚙️ Não-funcionais</h3>
+      <ul>
+        <li>Arquitetura escalável e modular</li>
+        <li>Respostas com latência &lt; 10 segundos</li>
+        <li>Separação segura de dados por cliente</li>
+        <li>Duplicação fácil de workflows</li>
+        <li>Confiabilidade de automação acima de 95%</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <table class="cmd-table">
+      <thead><tr><th>Métrica de sucesso</th><th>Alvo (3 meses)</th></tr></thead>
+      <tbody>
+        <tr><td class="desc">Clientes ativos</td><td><span class="badge badge-green">30</span></td></tr>
+        <tr><td class="desc">Conversas automatizadas</td><td><span class="badge badge-green">≥ 70%</span></td></tr>
+        <tr><td class="desc">Redução de carga manual</td><td><span class="badge badge-green">≥ 60%</span></td></tr>
+        <tr><td class="desc">Confiabilidade da automação</td><td><span class="badge badge-green">&gt; 95%</span></td></tr>
+        <tr><td class="desc">Latência de resposta</td><td><span class="badge badge-blue">&lt; 10s</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ─── 09 BLUEPRINT ─── -->
+<section id="blueprint">
+  <div class="section-header">
+    <div class="section-icon icon-orange">🚀</div>
+    <div><h2>09 — Blueprint Operacional: 10 Primeiros Clientes</h2><p>A ordem certa para crescer sem virar refém de suporte</p></div>
+  </div>
+
+  <div class="subhead">📋 Ordem correta das implementações</div>
+  <div style="margin-bottom:24px;">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body"><h4>Clientes 1–2 — Validação manual</h4><p>Escolha 2 clientes de <strong>um único nicho</strong> (ex: clínicas odontológicas). Construa o template base junto com eles. Aceite que será mais lento — você está criando o ativo reutilizável.</p></div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body"><h4>Clientes 3–5 — Refino do template</h4><p>Mesmo nicho. Cada novo cliente só pode mudar arquivos de config. Se precisar editar o workflow, isso é um bug do template — corrija na raiz.</p></div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body"><h4>Clientes 6–8 — Primeira replicação real</h4><p>Onboarding deve cair para &lt; 2h. Documente cada passo. Aqui você prova que a operação escala.</p></div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body"><h4>Clientes 9–10 — Segundo nicho</h4><p>Só agora abra um nicho novo (ex: advocacia). Clone o template, ajuste prompts. Você terá 2 verticais validadas e um processo.</p></div>
+    </div>
+  </div>
+
+  <div class="subhead">🛡️ Como evitar suporte infinito</div>
+  <div class="grid grid-2" style="margin-bottom:24px;">
+    <div class="tip tip-red">
+      <span class="tip-icon">❌</span>
+      <div class="tip-body"><h4>Customização sob demanda</h4><p>Cada pedido especial vira código único impossível de manter. Diga não — ou coloque a opção no config para todos.</p></div>
+    </div>
+    <div class="tip tip-green">
+      <span class="tip-icon">✅</span>
+      <div class="tip-body"><h4>Tudo no template, nada no cliente</h4><p>Correções vão para o template base e propagam. Um bug corrigido = corrigido para os 30.</p></div>
+    </div>
+    <div class="tip tip-green">
+      <span class="tip-icon">✅</span>
+      <div class="tip-body"><h4>Escalonamento configurado</h4><p>Defina quais intenções escalam para humano. O agente nunca "trava" — sempre tem saída.</p></div>
+    </div>
+    <div class="tip tip-blue">
+      <span class="tip-icon">📊</span>
+      <div class="tip-body"><h4>Monitoramento proativo</h4><p>O dashboard mostra falhas antes do cliente reclamar. Suporte vira manutenção planejada, não incêndio.</p></div>
+    </div>
+  </div>
+
+  <div class="tip tip-purple">
+    <span class="tip-icon">💡</span>
+    <div class="tip-body">
+      <h4>O modelo de operação de alta margem</h4>
+      <p>Foco em <strong>1–2 nichos</strong>, template único, config por cliente e onboarding documentado. Isso permite operar dezenas de clientes sem equipe grande — o trabalho repetitivo vira clonagem de configuração.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── 10 ROADMAP ─── -->
+<section id="roadmap">
+  <div class="section-header">
+    <div class="section-icon icon-green">⏱️</div>
+    <div><h2>10 — Onboarding &lt; 2h & Roadmap SaaS</h2><p>O processo de ativação e a evolução do produto</p></div>
+  </div>
+
+  <div class="subhead">⏱️ Onboarding de um cliente em menos de 2 horas</div>
+  <div class="table-wrap" style="margin-bottom:24px;">
+    <table class="cmd-table">
+      <thead><tr><th>Etapa</th><th>O que fazer</th><th>Tempo</th></tr></thead>
+      <tbody>
+        <tr><td class="desc">1. Coleta</td><td class="desc">Formulário padrão: dados do negócio, serviços, horários, tom de voz</td><td><span class="badge badge-green">~30 min</span></td></tr>
+        <tr><td class="desc">2. Clonar template</td><td class="desc">Copiar <span class="inline-code">_template/</span> e preencher o config.json do tenant</td><td><span class="badge badge-green">~20 min</span></td></tr>
+        <tr><td class="desc">3. Conectar contas</td><td class="desc">WhatsApp API, Google Calendar e CRM do cliente</td><td><span class="badge badge-green">~30 min</span></td></tr>
+        <tr><td class="desc">4. Voz & prompts</td><td class="desc">Selecionar voz ElevenLabs e ajustar prompt do nicho</td><td><span class="badge badge-green">~15 min</span></td></tr>
+        <tr><td class="desc">5. Teste & ativação</td><td class="desc">Conversas de teste cobrindo as 7 intenções, depois ativar</td><td><span class="badge badge-green">~25 min</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="subhead">🌐 Evolução para SaaS</div>
+  <div class="grid grid-3">
+    <div class="card"><h3>🔑 Login do cliente</h3><p>Dashboard com acesso próprio — visão filtrada da camada de monitoramento que já existe.</p></div>
+    <div class="card"><h3>📈 Analytics de performance</h3><p>Métricas por cliente: conversas, agendamentos gerados, redução de tempo de resposta.</p></div>
+    <div class="card"><h3>💳 Cobrança automatizada</h3><p>Faturamento recorrente integrado, sem cobrança manual mês a mês.</p></div>
+    <div class="card"><h3>🚪 Self-onboarding</h3><p>O cliente preenche o próprio formulário e o sistema clona o template sozinho.</p></div>
+    <div class="card"><h3>⭐ Score do agente</h3><p>Pontuação de performance do agente por cliente para guiar otimização.</p></div>
+    <div class="card"><h3>🔔 Alertas de suporte</h3><p>Detecção automática de problemas com notificação ao operador.</p></div>
+  </div>
+
+  <div class="tip tip-purple" style="margin-top:20px;">
+    <span class="tip-icon">🌟</span>
+    <div class="tip-body">
+      <h4>Decisões de hoje que favorecem o SaaS de amanhã</h4>
+      <p>1) <strong>Tenant_id em tudo</strong> desde o primeiro cliente · 2) <strong>Config por arquivo</strong>, nunca no workflow · 3) <strong>Métricas por tenant</strong> no logging · 4) <strong>Dashboard multi-usuário</strong> desde o início · 5) <strong>Template versionado</strong> para atualização centralizada</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>AI Atendimento Pro Brasil — Blueprint de Arquitetura & Implementação</p>
+  <p style="margin-top:6px;">Documento de referência · Infraestrutura de IA multi-tenant orquestrada por <strong>N8N</strong> · Maio de 2026</p>
+</footer>
+
+</body>
+</html>
