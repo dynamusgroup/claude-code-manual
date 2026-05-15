@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Projeção Financeira — AI Atendimento Pro Brasil</title>
+  <style>
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --surface2: #22263a;
+      --border: #2e3248;
+      --accent: #d97706;
+      --accent2: #7c3aed;
+      --accent3: #0ea5e9;
+      --green: #10b981;
+      --red: #ef4444;
+      --yellow: #f59e0b;
+      --text: #e2e8f0;
+      --muted: #8892a4;
+      --code-bg: #131720;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    /* HERO */
+    .hero {
+      background: linear-gradient(135deg, #1a0533 0%, #0f1117 40%, #001a2e 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 56px 40px 46px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -80px; left: 50%; transform: translateX(-50%);
+      width: 600px; height: 300px;
+      background: radial-gradient(ellipse, rgba(124,58,237,0.18) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-badge {
+      display: inline-block;
+      background: rgba(16,185,129,0.15);
+      border: 1px solid rgba(16,185,129,0.35);
+      color: #34d399;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 4px 14px;
+      border-radius: 20px;
+      margin-bottom: 20px;
+    }
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      margin-bottom: 14px;
+    }
+    .hero h1 span { color: var(--green); }
+    .hero p {
+      color: var(--muted);
+      font-size: 1.05rem;
+      max-width: 640px;
+      margin: 0 auto;
+    }
+    .hero-stats {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 28px;
+    }
+    .hero-stat {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 22px;
+      min-width: 150px;
+    }
+    .hero-stat .v { font-size: 1.3rem; font-weight: 800; color: var(--text); }
+    .hero-stat .l { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+
+    /* LAYOUT */
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+    /* NAV INDEX */
+    .toc {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px 32px;
+      margin: 40px 24px;
+    }
+    @media(min-width:640px){ .toc { margin-left: auto; margin-right: auto; max-width: 1100px; } }
+    .toc h2 { font-size: 0.9rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 14px; }
+    .toc-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 10px;
+    }
+    .toc-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      text-decoration: none;
+      color: var(--text);
+      font-size: 0.9rem;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .toc-item:hover { border-color: var(--accent2); background: rgba(124,58,237,0.08); }
+    .toc-item .icon { font-size: 1.1rem; }
+    .toc-item .num { font-size: 0.72rem; color: var(--muted); font-weight: 600; }
+
+    /* SECTIONS */
+    section { max-width: 1100px; margin: 0 auto 48px; padding: 0 24px; }
+    .section-header {
+      display: flex; align-items: center; gap: 14px;
+      margin-bottom: 22px; padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .section-icon {
+      width: 44px; height: 44px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem; flex-shrink: 0;
+    }
+    .icon-orange { background: rgba(217,119,6,0.15); border: 1px solid rgba(217,119,6,0.3); }
+    .icon-purple { background: rgba(124,58,237,0.15); border: 1px solid rgba(124,58,237,0.3); }
+    .icon-blue   { background: rgba(14,165,233,0.15); border: 1px solid rgba(14,165,233,0.3); }
+    .icon-green  { background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.3); }
+    .icon-red    { background: rgba(239,68,68,0.15);  border: 1px solid rgba(239,68,68,0.3);  }
+    .icon-yellow { background: rgba(245,158,11,0.15); border: 1px solid rgba(245,158,11,0.3); }
+    .section-header h2 { font-size: 1.45rem; font-weight: 700; }
+    .section-header p  { color: var(--muted); font-size: 0.88rem; margin-top: 2px; }
+
+    /* CARDS */
+    .grid { display: grid; gap: 16px; }
+    .grid-2 { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+    .grid-3 { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+    .grid-4 { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 22px;
+    }
+    .card h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 8px; }
+    .card p  { color: var(--muted); font-size: 0.86rem; }
+    .card ul { color: var(--muted); font-size: 0.85rem; margin: 8px 0 0 18px; }
+
+    /* KPI */
+    .kpi {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 20px;
+    }
+    .kpi .kl { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+    .kpi .kv { font-size: 1.5rem; font-weight: 800; margin-top: 4px; }
+    .kpi .ks { font-size: 0.78rem; color: var(--muted); margin-top: 2px; }
+
+    /* FORM INPUTS */
+    .param-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 14px; }
+    .field label {
+      display: block; font-size: 0.72rem; color: var(--muted);
+      margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em;
+    }
+    input[type=number], select {
+      width: 100%;
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 7px;
+      padding: 9px 11px;
+      font-size: 0.88rem;
+      font-family: inherit;
+    }
+    input[type=number]:focus, select:focus { outline: none; border-color: var(--accent2); }
+
+    .scn-row { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
+    .scn-btn {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 8px;
+      padding: 9px 18px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .scn-btn:hover { border-color: var(--accent2); }
+    .scn-btn.active { background: rgba(124,58,237,0.18); border-color: var(--accent2); color: #c4b5fd; }
+
+    /* TABLE */
+    .table-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow-x: auto;
+    }
+    table.proj { width: 100%; border-collapse: collapse; min-width: 920px; }
+    table.proj th {
+      text-align: right;
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--muted);
+      padding: 11px 12px;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    table.proj th:first-child, table.proj td:first-child { text-align: left; }
+    table.proj td {
+      padding: 8px 12px;
+      border-bottom: 1px solid rgba(46,50,72,0.5);
+      font-size: 0.82rem;
+      text-align: right;
+      white-space: nowrap;
+    }
+    table.proj tbody tr:hover td { background: rgba(255,255,255,0.02); }
+    table.proj tfoot td {
+      font-weight: 800;
+      border-top: 2px solid var(--border);
+      border-bottom: none;
+      background: rgba(124,58,237,0.06);
+    }
+    .pos { color: #34d399; }
+    .neg { color: #f87171; }
+    .muted-c { color: var(--muted); }
+    .cell-input {
+      width: 58px;
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      color: #67e8f9;
+      border-radius: 5px;
+      padding: 4px 6px;
+      font-size: 0.8rem;
+      text-align: center;
+      font-family: 'Fira Code', monospace;
+    }
+    .cell-input:focus { outline: none; border-color: var(--accent2); }
+
+    /* CHART */
+    .chart {
+      display: flex; align-items: flex-end; gap: 5px;
+      height: 210px; padding: 18px 16px 8px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+    .chart-col {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; justify-content: flex-end; height: 100%;
+    }
+    .bars { display: flex; gap: 3px; align-items: flex-end; height: 160px; }
+    .bar { width: 10px; border-radius: 3px 3px 0 0; min-height: 1px; }
+    .bar-rec { background: var(--green); }
+    .bar-cus { background: var(--red); }
+    .chart-col .ml { font-size: 0.62rem; color: var(--muted); margin-top: 6px; }
+    .legend { display: flex; gap: 18px; margin: 10px 2px 0; font-size: 0.78rem; color: var(--muted); }
+    .legend span { display: inline-flex; align-items: center; gap: 6px; }
+    .dot { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+
+    /* TIPS */
+    .tip {
+      display: flex; gap: 14px;
+      padding: 16px 20px;
+      border-radius: 10px;
+      margin-bottom: 12px;
+      border: 1px solid;
+    }
+    .tip-icon { font-size: 1.2rem; flex-shrink: 0; margin-top: 1px; }
+    .tip-body h4 { font-size: 0.9rem; font-weight: 700; margin-bottom: 4px; }
+    .tip-body p  { font-size: 0.85rem; color: var(--muted); }
+    .tip-green  { background: rgba(16,185,129,0.07);  border-color: rgba(16,185,129,0.25);  }
+    .tip-yellow { background: rgba(245,158,11,0.07);  border-color: rgba(245,158,11,0.25);  }
+    .tip-blue   { background: rgba(14,165,233,0.07);  border-color: rgba(14,165,233,0.25);  }
+    .tip-purple { background: rgba(124,58,237,0.07);  border-color: rgba(124,58,237,0.25);  }
+
+    .badge {
+      display: inline-block; padding: 2px 9px;
+      border-radius: 12px; font-size: 0.72rem; font-weight: 600;
+    }
+    .badge-green  { background: rgba(16,185,129,0.15);  color: #34d399; }
+    .badge-yellow { background: rgba(245,158,11,0.15);  color: #fbbf24; }
+    .badge-blue   { background: rgba(14,165,233,0.15);  color: #38bdf8; }
+    .badge-purple { background: rgba(124,58,237,0.15);  color: #a78bfa; }
+
+    .subhead { font-size: 1.02rem; font-weight: 700; margin: 26px 0 12px; }
+    .inline-code {
+      background: var(--code-bg); border: 1px solid var(--border);
+      padding: 2px 7px; border-radius: 5px;
+      font-size: 0.82rem; color: #a78bfa;
+    }
+    .src-list { font-size: 0.83rem; color: var(--muted); }
+    .src-list li { margin-bottom: 4px; }
+    .src-list a { color: var(--accent3); }
+
+    footer {
+      text-align: center; padding: 36px 24px;
+      color: var(--muted); font-size: 0.82rem;
+      border-top: 1px solid var(--border);
+    }
+    footer strong { color: var(--text); }
+
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+  </style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">Projeção Financeira · Ano 1</div>
+  <h1>Projeção de <span>Faturamento</span><br/>Vendas & Custos</h1>
+  <p>Simulação editável de 12 meses para a AI Atendimento Pro Brasil — receita, custos operacionais e taxas de pagamento Stripe vs Nubank PJ. Mude qualquer número e tudo recalcula.</p>
+  <div class="hero-stats">
+    <div class="hero-stat"><div class="v" id="kpi-fat">—</div><div class="l">Faturamento Ano 1</div></div>
+    <div class="hero-stat"><div class="v" id="kpi-lucro">—</div><div class="l">Lucro Líquido Ano 1</div></div>
+    <div class="hero-stat"><div class="v" id="kpi-mrr">—</div><div class="l">MRR no mês 12</div></div>
+    <div class="hero-stat"><div class="v" id="kpi-margem">—</div><div class="l">Margem média</div></div>
+  </div>
+</div>
+
+<!-- ÍNDICE -->
+<div class="toc container">
+  <h2>Índice</h2>
+  <div class="toc-grid">
+    <a href="#premissas" class="toc-item"><span class="icon">🎚️</span><span><span class="num">01 —</span> Premissas Editáveis</span></a>
+    <a href="#projecao"  class="toc-item"><span class="icon">📅</span><span><span class="num">02 —</span> Projeção 12 Meses</span></a>
+    <a href="#resultado" class="toc-item"><span class="icon">📈</span><span><span class="num">03 —</span> Resultado do Ano 1</span></a>
+    <a href="#pagamento" class="toc-item"><span class="icon">💳</span><span><span class="num">04 —</span> Stripe vs Nubank PJ</span></a>
+    <a href="#fontes"    class="toc-item"><span class="icon">📚</span><span><span class="num">05 —</span> Notas & Fontes</span></a>
+  </div>
+</div>
+
+<!-- ─── 01 PREMISSAS ─── -->
+<section id="premissas">
+  <div class="section-header">
+    <div class="section-icon icon-orange">🎚️</div>
+    <div><h2>01 — Premissas Editáveis</h2><p>Ajuste os valores — a projeção inteira recalcula na hora</p></div>
+  </div>
+
+  <p style="color:var(--muted);font-size:.86rem;margin-bottom:10px;">Cenário rápido</p>
+  <div class="scn-row">
+    <button class="scn-btn" data-scn="conservador">Conservador</button>
+    <button class="scn-btn active" data-scn="base">Base (meta PRD)</button>
+    <button class="scn-btn" data-scn="agressivo">Agressivo</button>
+  </div>
+
+  <div class="param-grid">
+    <div class="field"><label>Preço de setup (R$)</label><input type="number" id="precoSetup" value="2997" step="1"></div>
+    <div class="field"><label>Mensalidade (R$)</label><input type="number" id="precoMensal" value="997" step="1"></div>
+    <div class="field"><label>Churn mensal (%)</label><input type="number" id="churn" value="3" step="0.5"></div>
+    <div class="field"><label>Custo variável / cliente (R$)</label><input type="number" id="custoVar" value="170" step="10"></div>
+    <div class="field"><label>Custo fixo mensal (R$)</label><input type="number" id="custoFixo" value="600" step="50"></div>
+    <div class="field">
+      <label>Forma de cobrança</label>
+      <select id="metodo">
+        <option value="stripe-cartao">Stripe — Cartão (3,99% + R$0,39)</option>
+        <option value="stripe-pix">Stripe — Pix (1,19%)</option>
+        <option value="nubank-cartao">Nubank PJ — Link/Cartão (4,20%)</option>
+        <option value="nubank-pix">Nubank PJ — Pix (0%)</option>
+        <option value="nubank-boleto">Nubank PJ — Boleto (R$3 fixo)</option>
+      </select>
+    </div>
+    <div class="field"><label>Taxa % usada na projeção</label><input type="number" id="taxaPct" value="3.99" step="0.01"></div>
+    <div class="field"><label>Taxa fixa / transação (R$)</label><input type="number" id="taxaFixa" value="0.39" step="0.01"></div>
+  </div>
+
+  <div class="tip tip-blue" style="margin-top:18px;">
+    <span class="tip-icon">ℹ️</span>
+    <div class="tip-body">
+      <h4>O que entra em cada custo</h4>
+      <p><strong>Variável por cliente</strong> (~R$170): WhatsApp API + LLM + ElevenLabs + transcrição de áudio. <strong>Fixo mensal</strong> (~R$600): hospedagem do N8N/VPS, domínio e ferramentas de apoio. Todos os valores são estimativas — edite com seus números reais.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── 02 PROJEÇÃO ─── -->
+<section id="projecao">
+  <div class="section-header">
+    <div class="section-icon icon-blue">📅</div>
+    <div><h2>02 — Projeção Mês a Mês</h2><p>A coluna "Novos" é editável — digite a meta de vendas de cada mês</p></div>
+  </div>
+
+  <div class="table-wrap">
+    <table class="proj">
+      <thead>
+        <tr>
+          <th>Mês</th>
+          <th>Novos</th>
+          <th>Churn</th>
+          <th>Ativos</th>
+          <th>Rec. Setup</th>
+          <th>MRR</th>
+          <th>Receita</th>
+          <th>Taxa pgto</th>
+          <th>Custo var.</th>
+          <th>Custo fixo</th>
+          <th>Custo total</th>
+          <th>Lucro líq.</th>
+          <th>Margem</th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+      <tfoot>
+        <tr>
+          <td>Total</td>
+          <td id="tot_novos"></td>
+          <td id="tot_churn"></td>
+          <td class="muted-c">—</td>
+          <td id="tot_recSetup"></td>
+          <td id="tot_mrr"></td>
+          <td id="tot_receita"></td>
+          <td id="tot_taxa"></td>
+          <td id="tot_cVar"></td>
+          <td id="tot_cFixo"></td>
+          <td id="tot_custoTotal"></td>
+          <td id="tot_lucro"></td>
+          <td id="tot_margem"></td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+  <p style="color:var(--muted);font-size:.78rem;margin-top:10px;">MRR = receita recorrente das mensalidades dos clientes ativos no fim do mês. Receita = setup + MRR.</p>
+</section>
+
+<!-- ─── 03 RESULTADO ─── -->
+<section id="resultado">
+  <div class="section-header">
+    <div class="section-icon icon-green">📈</div>
+    <div><h2>03 — Resultado do Ano 1</h2><p>Consolidado dos 12 meses</p></div>
+  </div>
+
+  <div class="grid grid-4" style="margin-bottom:22px;">
+    <div class="kpi"><div class="kl">Faturamento bruto</div><div class="kv" id="r-fat">—</div><div class="ks">setup + mensalidades</div></div>
+    <div class="kpi"><div class="kl">Custos operacionais</div><div class="kv neg" id="r-custoop">—</div><div class="ks">variável + fixo</div></div>
+    <div class="kpi"><div class="kl">Taxas de pagamento</div><div class="kv neg" id="r-taxa">—</div><div class="ks" id="r-taxa-pct">—</div></div>
+    <div class="kpi"><div class="kl">Lucro líquido</div><div class="kv pos" id="r-lucro">—</div><div class="ks" id="r-margem">—</div></div>
+    <div class="kpi"><div class="kl">MRR no mês 12</div><div class="kv" id="r-mrr">—</div><div class="ks">recorrente mensal</div></div>
+    <div class="kpi"><div class="kl">Clientes ativos (M12)</div><div class="kv" id="r-ativos">—</div><div class="ks">após churn</div></div>
+    <div class="kpi"><div class="kl">Total de vendas (setups)</div><div class="kv" id="r-vendas">—</div><div class="ks">novos clientes no ano</div></div>
+    <div class="kpi"><div class="kl">Mês de break-even</div><div class="kv" id="r-be">—</div><div class="ks">lucro acumulado &gt; 0</div></div>
+  </div>
+
+  <div class="subhead">Receita vs. Custo total por mês</div>
+  <div class="chart" id="chart"></div>
+  <div class="legend">
+    <span><span class="dot" style="background:var(--green)"></span> Receita total</span>
+    <span><span class="dot" style="background:var(--red)"></span> Custo total (operacional + taxas)</span>
+  </div>
+</section>
+
+<!-- ─── 04 PAGAMENTO ─── -->
+<section id="pagamento">
+  <div class="section-header">
+    <div class="section-icon icon-purple">💳</div>
+    <div><h2>04 — Custo de Pagamento: Stripe vs Nubank PJ</h2><p>Quanto cada forma de cobrança consome do faturamento do Ano 1</p></div>
+  </div>
+
+  <div class="table-wrap" style="margin-bottom:18px;">
+    <table class="proj">
+      <thead>
+        <tr>
+          <th>Forma de cobrança</th>
+          <th>Taxa</th>
+          <th>Custo anual estimado</th>
+          <th>% do faturamento</th>
+          <th>vs. Stripe Cartão</th>
+        </tr>
+      </thead>
+      <tbody id="cmp-body"></tbody>
+    </table>
+  </div>
+
+  <div class="grid grid-2">
+    <div class="tip tip-green">
+      <span class="tip-icon">✅</span>
+      <div class="tip-body">
+        <h4>Nubank PJ — Pix tem custo zero</h4>
+        <p>A conta Nu Empresas não cobra para receber Pix. Para o setup de R$ 2.997 (pagamento único), cobrar por Pix via link da conta CNPJ elimina a taxa — economia direta na margem.</p>
+      </div>
+    </div>
+    <div class="tip tip-blue">
+      <span class="tip-icon">🔁</span>
+      <div class="tip-body">
+        <h4>Stripe vence na recorrência</h4>
+        <p>O link do Nubank é cobrança avulsa. A mensalidade de R$ 997 precisa de cobrança recorrente automática — onde a Stripe (Subscriptions) cobra sozinha todo mês. Vale a taxa pela automação.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="tip tip-purple" style="margin-top:6px;">
+    <span class="tip-icon">🌟</span>
+    <div class="tip-body">
+      <h4>Estratégia híbrida (melhor margem + automação)</h4>
+      <p>Setup R$ 2.997 → <strong>Link Pix do Nubank PJ</strong> (taxa 0%). Mensalidade R$ 997 → <strong>Stripe recorrente</strong> (cobrança automática). Selecione cada cenário acima no campo "Forma de cobrança" para comparar o impacto.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── 05 FONTES ─── -->
+<section id="fontes">
+  <div class="section-header">
+    <div class="section-icon icon-yellow">📚</div>
+    <div><h2>05 — Notas & Fontes</h2><p>De onde vêm as taxas e o que confirmar</p></div>
+  </div>
+
+  <div class="tip tip-yellow">
+    <span class="tip-icon">⚠️</span>
+    <div class="tip-body">
+      <h4>Taxas são referência — confirme no app</h4>
+      <p>As taxas do Nubank ficam visíveis no app Nu Empresas e podem mudar sem aviso. As da Stripe valem para cartão nacional. Confirme seus valores reais e ajuste nos campos editáveis.</p>
+    </div>
+  </div>
+
+  <div class="grid grid-2" style="margin-top:8px;">
+    <div class="card">
+      <h3>Nubank PJ — Link de pagamento</h3>
+      <ul>
+        <li>Cartão de crédito à vista: <strong>4,20%</strong> por transação</li>
+        <li>Pix (receber): <strong>sem taxa</strong></li>
+        <li>Boleto de cobrança: <strong>R$ 3,00</strong> fixo por boleto</li>
+        <li>Conta PJ: sem anuidade e sem tarifa de manutenção</li>
+        <li>Recebimento: Pix na hora; cartão em até 1 dia útil</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Stripe — Brasil</h3>
+      <ul>
+        <li>Cartão de crédito nacional: <strong>3,99% + R$ 0,39</strong></li>
+        <li>Cartão internacional: <strong>+2%</strong></li>
+        <li>Pix: <strong>1,19%</strong></li>
+        <li>Sem taxa de setup, mensalidade ou taxas ocultas</li>
+        <li>Suporta cobrança recorrente automática (Subscriptions)</li>
+      </ul>
+    </div>
+  </div>
+
+  <p class="subhead">Fontes oficiais consultadas</p>
+  <ul class="src-list">
+    <li><a href="https://nubank.com.br/empresas/solucoes-para-cobranca">Nubank — Soluções de cobrança (Nu Empresas)</a></li>
+    <li><a href="https://nubank.com.br/contratos/termos-e-condicoes-link-de-pagamento">Nubank — Termos e Condições do Link de Pagamento</a></li>
+    <li><a href="https://blog.nubank.com.br/calculadoras/calculadora-taxas-nu-empresas/">Nubank — Calculadora de taxas Nu Empresas</a></li>
+    <li><a href="https://nubank.com.br/empresas/conta/pix">Nubank — Pix Nu Empresas</a></li>
+    <li><a href="https://stripe.com/br/pricing">Stripe — Preços e tarifas (Brasil)</a></li>
+    <li><a href="https://stripe.com/br/payment-method/pix">Stripe — Pix</a></li>
+  </ul>
+</section>
+
+<footer>
+  <p>Projeção Financeira — <strong>AI Atendimento Pro Brasil</strong></p>
+  <p style="margin-top:6px;">Documento de simulação · valores editáveis · taxas de referência de Maio de 2026</p>
+</footer>
+
+<script>
+  const MESES = 12;
+  const CENARIOS = {
+    conservador: { novos: [3,4,5,3,3,3,3,3,3,3,3,3], churn: 5 },
+    base:        { novos: [8,10,12,4,4,4,4,4,4,4,4,4], churn: 3 },
+    agressivo:   { novos: [12,14,16,8,8,8,8,8,8,8,8,8], churn: 2 }
+  };
+  const METODOS = {
+    'stripe-cartao':  { pct: 3.99, fixa: 0.39 },
+    'stripe-pix':     { pct: 1.19, fixa: 0 },
+    'nubank-cartao':  { pct: 4.20, fixa: 0 },
+    'nubank-pix':     { pct: 0,    fixa: 0 },
+    'nubank-boleto':  { pct: 0,    fixa: 3.00 }
+  };
+  const COMPARACAO = [
+    { nome: 'Stripe — Cartão',        pct: 3.99, fixa: 0.39 },
+    { nome: 'Stripe — Pix',           pct: 1.19, fixa: 0 },
+    { nome: 'Nubank PJ — Link/Cartão',pct: 4.20, fixa: 0 },
+    { nome: 'Nubank PJ — Pix',        pct: 0,    fixa: 0 },
+    { nome: 'Nubank PJ — Boleto',     pct: 0,    fixa: 3.00 }
+  ];
+
+  const brl = v => v.toLocaleString('pt-BR', { style:'currency', currency:'BRL', maximumFractionDigits:0 });
+  const brl2 = v => v.toLocaleString('pt-BR', { style:'currency', currency:'BRL' });
+  const pct = v => (v*100).toLocaleString('pt-BR', { minimumFractionDigits:1, maximumFractionDigits:1 }) + '%';
+  const num = id => parseFloat(document.getElementById(id).value) || 0;
+  const set = (id, txt) => document.getElementById(id).textContent = txt;
+
+  function buildTable() {
+    let html = '';
+    for (let m = 0; m < MESES; m++) {
+      html += `<tr>
+        <td>Mês ${m+1}</td>
+        <td><input class="cell-input" type="number" min="0" id="novos-${m}" value="0"></td>
+        <td class="muted-c" id="churn_${m}"></td>
+        <td id="ativos_${m}"></td>
+        <td id="recSetup_${m}"></td>
+        <td id="mrr_${m}"></td>
+        <td id="receita_${m}"></td>
+        <td class="muted-c" id="taxa_${m}"></td>
+        <td class="muted-c" id="cVar_${m}"></td>
+        <td class="muted-c" id="cFixo_${m}"></td>
+        <td id="custoTotal_${m}"></td>
+        <td id="lucro_${m}"></td>
+        <td id="margem_${m}"></td>
+      </tr>`;
+    }
+    document.getElementById('tbody').innerHTML = html;
+    for (let m = 0; m < MESES; m++) {
+      document.getElementById('novos-'+m).addEventListener('input', recalc);
+    }
+  }
+
+  function recalc() {
+    const precoSetup = num('precoSetup'), precoMensal = num('precoMensal');
+    const churn = num('churn')/100, custoVar = num('custoVar'), custoFixo = num('custoFixo');
+    const taxaPct = num('taxaPct')/100, taxaFixa = num('taxaFixa');
+
+    let ativos = 0, accLucro = 0, breakeven = 0;
+    let totNovos=0, totChurn=0, totRecSetup=0, totMrr=0, totReceita=0,
+        totTaxa=0, totCVar=0, totCFixo=0, totCusto=0, totLucro=0, totTransac=0;
+    const rec = [], cus = [];
+
+    for (let m = 0; m < MESES; m++) {
+      const novos = num('novos-'+m);
+      const churnados = Math.round(ativos * churn);
+      ativos = ativos - churnados + novos;
+      if (ativos < 0) ativos = 0;
+
+      const recSetup = novos * precoSetup;
+      const mrr = ativos * precoMensal;
+      const receita = recSetup + mrr;
+      const transac = novos + ativos;
+      const taxa = receita * taxaPct + transac * taxaFixa;
+      const cVar = ativos * custoVar;
+      const custoTotal = cVar + custoFixo + taxa;
+      const lucro = receita - custoTotal;
+      const margem = receita > 0 ? lucro / receita : 0;
+      accLucro += lucro;
+      if (breakeven === 0 && accLucro > 0) breakeven = m + 1;
+
+      set('churn_'+m, churnados);
+      set('ativos_'+m, ativos);
+      set('recSetup_'+m, brl(recSetup));
+      set('mrr_'+m, brl(mrr));
+      set('receita_'+m, brl(receita));
+      set('taxa_'+m, brl(taxa));
+      set('cVar_'+m, brl(cVar));
+      set('cFixo_'+m, brl(custoFixo));
+      set('custoTotal_'+m, brl(custoTotal));
+      const lucroCell = document.getElementById('lucro_'+m);
+      lucroCell.textContent = brl(lucro);
+      lucroCell.className = lucro >= 0 ? 'pos' : 'neg';
+      const margemCell = document.getElementById('margem_'+m);
+      margemCell.textContent = pct(margem);
+      margemCell.className = lucro >= 0 ? 'pos' : 'neg';
+
+      totNovos+=novos; totChurn+=churnados; totRecSetup+=recSetup; totMrr+=mrr;
+      totReceita+=receita; totTaxa+=taxa; totCVar+=cVar; totCFixo+=custoFixo;
+      totCusto+=custoTotal; totLucro+=lucro; totTransac+=transac;
+      rec.push(receita); cus.push(custoTotal);
+    }
+
+    set('tot_novos', totNovos);
+    set('tot_churn', totChurn);
+    set('tot_recSetup', brl(totRecSetup));
+    set('tot_mrr', brl(totMrr));
+    set('tot_receita', brl(totReceita));
+    set('tot_taxa', brl(totTaxa));
+    set('tot_cVar', brl(totCVar));
+    set('tot_cFixo', brl(totCFixo));
+    set('tot_custoTotal', brl(totCusto));
+    const tl = document.getElementById('tot_lucro');
+    tl.textContent = brl(totLucro);
+    tl.className = totLucro >= 0 ? 'pos' : 'neg';
+    set('tot_margem', pct(totReceita > 0 ? totLucro/totReceita : 0));
+
+    const margemAno = totReceita > 0 ? totLucro/totReceita : 0;
+    const custoOp = totCVar + totCFixo;
+    const mrrFinal = num('precoMensal') * ativos;
+
+    set('kpi-fat', brl(totReceita));
+    set('kpi-lucro', brl(totLucro));
+    set('kpi-mrr', brl(mrrFinal));
+    set('kpi-margem', pct(margemAno));
+
+    set('r-fat', brl(totReceita));
+    set('r-custoop', brl(custoOp));
+    set('r-taxa', brl(totTaxa));
+    set('r-taxa-pct', pct(totReceita > 0 ? totTaxa/totReceita : 0) + ' do faturamento');
+    set('r-lucro', brl(totLucro));
+    set('r-margem', 'margem de ' + pct(margemAno));
+    set('r-mrr', brl(mrrFinal));
+    set('r-ativos', ativos);
+    set('r-vendas', totNovos);
+    set('r-be', breakeven > 0 ? 'Mês ' + breakeven : 'não atinge');
+
+    drawChart(rec, cus);
+    drawComparacao(totReceita, totTransac);
+  }
+
+  function drawChart(rec, cus) {
+    const max = Math.max(...rec, ...cus, 1);
+    let html = '';
+    for (let m = 0; m < MESES; m++) {
+      const hr = Math.round(rec[m] / max * 150);
+      const hc = Math.round(cus[m] / max * 150);
+      html += `<div class="chart-col">
+        <div class="bars">
+          <div class="bar bar-rec" style="height:${hr}px" title="Receita: ${brl(rec[m])}"></div>
+          <div class="bar bar-cus" style="height:${hc}px" title="Custo: ${brl(cus[m])}"></div>
+        </div>
+        <div class="ml">M${m+1}</div>
+      </div>`;
+    }
+    document.getElementById('chart').innerHTML = html;
+  }
+
+  function drawComparacao(receita, transac) {
+    const base = receita * 0.0399 + transac * 0.39;
+    let html = '';
+    COMPARACAO.forEach(met => {
+      const custo = receita * met.pct/100 + transac * met.fixa;
+      const dif = custo - base;
+      const taxaTxt = met.pct.toLocaleString('pt-BR',{minimumFractionDigits:2}) + '%'
+        + (met.fixa > 0 ? ' + ' + brl2(met.fixa) : '');
+      let difTxt, difClass;
+      if (Math.abs(dif) < 1) { difTxt = '— (referência)'; difClass = 'muted-c'; }
+      else if (dif < 0) { difTxt = 'economiza ' + brl(-dif); difClass = 'pos'; }
+      else { difTxt = '+ ' + brl(dif); difClass = 'neg'; }
+      html += `<tr>
+        <td>${met.nome}</td>
+        <td class="muted-c">${taxaTxt}</td>
+        <td>${brl(custo)}</td>
+        <td class="muted-c">${pct(receita > 0 ? custo/receita : 0)}</td>
+        <td class="${difClass}">${difTxt}</td>
+      </tr>`;
+    });
+    document.getElementById('cmp-body').innerHTML = html;
+  }
+
+  function aplicarCenario(nome) {
+    const c = CENARIOS[nome];
+    for (let m = 0; m < MESES; m++) document.getElementById('novos-'+m).value = c.novos[m];
+    document.getElementById('churn').value = c.churn;
+    document.querySelectorAll('.scn-btn').forEach(b =>
+      b.classList.toggle('active', b.dataset.scn === nome));
+    recalc();
+  }
+
+  // Listeners
+  buildTable();
+  ['precoSetup','precoMensal','churn','custoVar','custoFixo','taxaPct','taxaFixa']
+    .forEach(id => document.getElementById(id).addEventListener('input', recalc));
+  document.getElementById('metodo').addEventListener('change', e => {
+    const m = METODOS[e.target.value];
+    document.getElementById('taxaPct').value = m.pct;
+    document.getElementById('taxaFixa').value = m.fixa;
+    recalc();
+  });
+  document.querySelectorAll('.scn-btn').forEach(b =>
+    b.addEventListener('click', () => aplicarCenario(b.dataset.scn)));
+
+  aplicarCenario('base');
+</script>
+
+</body>
+</html>
