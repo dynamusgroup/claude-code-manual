@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Experimento Inglês — 50% Fluente em 3 Meses (Método Poliglota)</title>
+  <style>
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --surface2: #22263a;
+      --border: #2e3248;
+      --accent: #d97706;
+      --accent2: #7c3aed;
+      --accent3: #0ea5e9;
+      --green: #10b981;
+      --red: #ef4444;
+      --yellow: #f59e0b;
+      --text: #e2e8f0;
+      --muted: #8892a4;
+      --code-bg: #131720;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #1a0533 0%, #0f1117 40%, #001a2e 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 60px 40px 50px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -80px; left: 50%; transform: translateX(-50%);
+      width: 600px; height: 300px;
+      background: radial-gradient(ellipse, rgba(14,165,233,0.18) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-badge {
+      display: inline-block;
+      background: rgba(14,165,233,0.2);
+      border: 1px solid rgba(14,165,233,0.4);
+      color: #67e8f9;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 4px 14px;
+      border-radius: 20px;
+      margin-bottom: 20px;
+    }
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      margin-bottom: 16px;
+    }
+    .hero h1 span { color: var(--accent3); }
+    .hero p {
+      color: var(--muted);
+      font-size: 1.1rem;
+      max-width: 640px;
+      margin: 0 auto;
+    }
+
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+    .toc {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 28px 32px;
+      margin: 40px auto;
+      max-width: 1100px;
+      margin-left: 24px;
+      margin-right: 24px;
+    }
+    @media(min-width:640px){ .toc { margin-left: auto; margin-right: auto; } }
+    .toc h2 { font-size: 0.9rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 16px; }
+    .toc-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 10px;
+    }
+    .toc-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      text-decoration: none;
+      color: var(--text);
+      font-size: 0.9rem;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .toc-item:hover { border-color: var(--accent3); background: rgba(14,165,233,0.08); }
+    .toc-item .icon { font-size: 1.1rem; }
+    .toc-item .num { font-size: 0.72rem; color: var(--muted); font-weight: 600; }
+
+    section {
+      max-width: 1100px;
+      margin: 0 auto 48px;
+      padding: 0 24px;
+    }
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .section-icon {
+      width: 44px; height: 44px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem;
+      flex-shrink: 0;
+    }
+    .icon-orange { background: rgba(217,119,6,0.15); border: 1px solid rgba(217,119,6,0.3); }
+    .icon-purple { background: rgba(124,58,237,0.15); border: 1px solid rgba(124,58,237,0.3); }
+    .icon-blue   { background: rgba(14,165,233,0.15); border: 1px solid rgba(14,165,233,0.3); }
+    .icon-green  { background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.3); }
+    .icon-red    { background: rgba(239,68,68,0.15);  border: 1px solid rgba(239,68,68,0.3);  }
+    .icon-yellow { background: rgba(245,158,11,0.15); border: 1px solid rgba(245,158,11,0.3); }
+
+    .section-header h2 { font-size: 1.5rem; font-weight: 700; }
+    .section-header p  { color: var(--muted); font-size: 0.9rem; margin-top: 2px; }
+
+    .grid { display: grid; gap: 16px; }
+    .grid-2 { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+    .grid-3 { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 24px;
+      transition: border-color 0.2s;
+    }
+    .card:hover { border-color: #3d4260; }
+    .card h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 8px; }
+    .card p  { color: var(--muted); font-size: 0.875rem; }
+
+    pre {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px 20px;
+      overflow-x: auto;
+      font-size: 0.85rem;
+      line-height: 1.6;
+      font-family: 'Fira Code', 'Cascadia Code', monospace;
+    }
+    code {
+      font-family: 'Fira Code', 'Cascadia Code', monospace;
+      font-size: 0.82rem;
+    }
+    .inline-code {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      padding: 2px 7px;
+      border-radius: 5px;
+      font-size: 0.82rem;
+      color: #a78bfa;
+    }
+
+    .cmd-table { width: 100%; border-collapse: collapse; }
+    .cmd-table th {
+      text-align: left;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .cmd-table td {
+      padding: 11px 16px;
+      border-bottom: 1px solid rgba(46,50,72,0.5);
+      font-size: 0.875rem;
+      vertical-align: top;
+    }
+    .cmd-table tr:last-child td { border-bottom: none; }
+    .cmd-table tr:hover td { background: rgba(255,255,255,0.02); }
+    .cmd-table .cmd { color: #67e8f9; font-family: 'Fira Code', monospace; font-size: 0.8rem; }
+    .cmd-table .desc { color: var(--muted); }
+    .table-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .file-tree {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 24px;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.85rem;
+      line-height: 2;
+    }
+    .ft-dir   { color: #93c5fd; }
+    .ft-file  { color: #d4d4d8; }
+    .ft-spec  { color: #a78bfa; }
+    .ft-env   { color: #fbbf24; }
+    .ft-doc   { color: #34d399; }
+    .ft-comment { color: #475569; }
+
+    .tip {
+      display: flex;
+      gap: 14px;
+      padding: 16px 20px;
+      border-radius: 10px;
+      margin-bottom: 12px;
+      border: 1px solid;
+    }
+    .tip-icon { font-size: 1.2rem; flex-shrink: 0; margin-top: 1px; }
+    .tip-body h4 { font-size: 0.9rem; font-weight: 700; margin-bottom: 4px; }
+    .tip-body p  { font-size: 0.85rem; color: var(--muted); }
+    .tip-green  { background: rgba(16,185,129,0.07);  border-color: rgba(16,185,129,0.25);  }
+    .tip-yellow { background: rgba(245,158,11,0.07);  border-color: rgba(245,158,11,0.25);  }
+    .tip-blue   { background: rgba(14,165,233,0.07);  border-color: rgba(14,165,233,0.25);  }
+    .tip-red    { background: rgba(239,68,68,0.07);   border-color: rgba(239,68,68,0.25);   }
+    .tip-purple { background: rgba(124,58,237,0.07);  border-color: rgba(124,58,237,0.25);  }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 9px;
+      border-radius: 12px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+    }
+    .badge-green  { background: rgba(16,185,129,0.15);  color: #34d399; }
+    .badge-yellow { background: rgba(245,158,11,0.15);  color: #fbbf24; }
+    .badge-blue   { background: rgba(14,165,233,0.15);  color: #38bdf8; }
+    .badge-purple { background: rgba(124,58,237,0.15);  color: #a78bfa; }
+    .badge-red    { background: rgba(239,68,68,0.15);   color: #f87171; }
+
+    hr { border: none; border-top: 1px solid var(--border); margin: 48px 0; }
+
+    footer {
+      text-align: center;
+      padding: 40px 24px;
+      color: var(--muted);
+      font-size: 0.83rem;
+      border-top: 1px solid var(--border);
+    }
+    footer strong { color: var(--text); }
+
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+    /* Stat boxes */
+    .stat-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px,1fr)); gap: 14px; margin-bottom: 24px; }
+    .stat {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 20px;
+    }
+    .stat-num { font-size: 1.8rem; font-weight: 800; color: var(--accent3); letter-spacing: -0.02em; }
+    .stat-lbl { font-size: 0.78rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 4px; }
+
+    /* Timeline */
+    .timeline { display: grid; gap: 14px; }
+    .tl-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent3);
+      border-radius: 10px;
+      padding: 16px 20px;
+    }
+    .tl-week { font-size: 0.72rem; color: var(--accent3); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; }
+    .tl-item h4 { font-size: 0.98rem; margin: 4px 0 8px; }
+    .tl-item p { font-size: 0.86rem; color: var(--muted); }
+
+    /* Checklist */
+    .checklist { list-style: none; padding: 0; }
+    .checklist li {
+      padding: 8px 0 8px 28px;
+      position: relative;
+      font-size: 0.88rem;
+      color: var(--text);
+      border-bottom: 1px solid rgba(46,50,72,0.5);
+    }
+    .checklist li:last-child { border-bottom: none; }
+    .checklist li::before {
+      content: '☐';
+      position: absolute;
+      left: 4px;
+      color: var(--accent3);
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">Método Poliglota · 90 Dias</div>
+  <h1>Experimento <span>Inglês</span><br/>50% Fluente em 3 Meses</h1>
+  <p>Protocolo baseado nas técnicas de Krashen, Kaufmann, Argüelles e Lampariello. Plano de 2h/dia, partindo do nível A1-A2 até B1 sólido (CEFR).</p>
+</div>
+
+<!-- STATS -->
+<div class="container" style="margin-top:36px;">
+  <div class="stat-row">
+    <div class="stat"><div class="stat-num">90</div><div class="stat-lbl">Dias de prática</div></div>
+    <div class="stat"><div class="stat-num">2h</div><div class="stat-lbl">Tempo diário</div></div>
+    <div class="stat"><div class="stat-num">180h</div><div class="stat-lbl">Investimento total</div></div>
+    <div class="stat"><div class="stat-num">B1</div><div class="stat-lbl">Meta CEFR</div></div>
+    <div class="stat"><div class="stat-num">1000</div><div class="stat-lbl">Palavras-chave</div></div>
+  </div>
+</div>
+
+<!-- ÍNDICE -->
+<div class="toc container">
+  <h2>Índice</h2>
+  <div class="toc-grid">
+    <a href="#visao"        class="toc-item"><span class="icon">🎯</span><span><span class="num">01 —</span> Visão Geral & Meta</span></a>
+    <a href="#principios"   class="toc-item"><span class="icon">🧬</span><span><span class="num">02 —</span> Princípios Poliglotas</span></a>
+    <a href="#rotina"       class="toc-item"><span class="icon">⏰</span><span><span class="num">03 —</span> Rotina Diária 2h</span></a>
+    <a href="#cronograma"   class="toc-item"><span class="icon">📆</span><span><span class="num">04 —</span> Cronograma 12 Semanas</span></a>
+    <a href="#listening"    class="toc-item"><span class="icon">🎧</span><span><span class="num">05 —</span> Listening & Input</span></a>
+    <a href="#speaking"     class="toc-item"><span class="icon">🗣️</span><span><span class="num">06 —</span> Speaking & Shadowing</span></a>
+    <a href="#vocab"        class="toc-item"><span class="icon">📚</span><span><span class="num">07 —</span> Vocab & Anki (SRS)</span></a>
+    <a href="#writing"      class="toc-item"><span class="icon">✍️</span><span><span class="num">08 —</span> Writing & Inglês Técnico</span></a>
+    <a href="#ferramentas"  class="toc-item"><span class="icon">🛠️</span><span><span class="num">09 —</span> Stack de Ferramentas</span></a>
+    <a href="#metricas"     class="toc-item"><span class="icon">📊</span><span><span class="num">10 —</span> Métricas & Tracking</span></a>
+  </div>
+</div>
+
+<!-- ─── 01 VISÃO ─── -->
+<section id="visao">
+  <div class="section-header">
+    <div class="section-icon icon-blue">🎯</div>
+    <div><h2>01 — Visão Geral & Meta</h2><p>O que significa "50% fluente" e por que isso é viável em 90 dias</p></div>
+  </div>
+
+  <div class="grid grid-2" style="margin-bottom:20px;">
+    <div class="card">
+      <span class="badge badge-blue">Ponto de Partida</span>
+      <h3 style="margin-top:8px;">Nível A1-A2 (Básico)</h3>
+      <p>Você entende frases simples, mas trava em conversa real. Vocabulário ~500-1000 palavras passivas. Listening de áudio nativo é difícil.</p>
+    </div>
+    <div class="card">
+      <span class="badge badge-green">Meta em 90 Dias</span>
+      <h3 style="margin-top:8px;">Nível B1 Sólido (≈ 50%)</h3>
+      <p>Conversação fluida sobre temas familiares, listening de podcasts/séries com pouca legenda, escrita de e-mails profissionais, vocabulário ativo de 2000+ palavras.</p>
+    </div>
+    <div class="card">
+      <span class="badge badge-purple">Foco Multidimensional</span>
+      <h3 style="margin-top:8px;">4 frentes em paralelo</h3>
+      <p>Conversação cotidiana · Inglês técnico/trabalho · Listening (filmes/podcasts) · Escrita (e-mail, posts). Cada habilidade reforça as outras.</p>
+    </div>
+    <div class="card">
+      <span class="badge badge-yellow">Por que funciona</span>
+      <h3 style="margin-top:8px;">Lei de Pareto + Imersão</h3>
+      <p>80% da fala cotidiana usa só 1000 palavras. Com 180h de exposição direcionada, você atinge o "ponto de virada" onde o idioma começa a fluir sem tradução mental.</p>
+    </div>
+  </div>
+
+  <div class="tip tip-green">
+    <span class="tip-icon">✅</span>
+    <div class="tip-body">
+      <h4>Regra de Ouro do FSI (Foreign Service Institute)</h4>
+      <p>O FSI americano estima 600-750h para um adulto atingir <strong>fluência profissional plena</strong> em inglês. Com 180h focadas (90 dias × 2h), você cobre ~25-30% desse caminho — o suficiente para sair de "travado" e entrar em "se virando bem".</p>
+    </div>
+  </div>
+
+  <div class="tip tip-red">
+    <span class="tip-icon">⚠️</span>
+    <div class="tip-body">
+      <h4>Sem regularidade, não funciona</h4>
+      <p>2h por dia é INEGOCIÁVEL. Pular 3 dias na semana derruba o experimento — o cérebro precisa de exposição contínua para consolidar. Melhor 1h todo dia do que 7h num domingo.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── 02 PRINCÍPIOS ─── -->
+<section id="principios">
+  <div class="section-header">
+    <div class="section-icon icon-purple">🧬</div>
+    <div><h2>02 — Princípios Poliglotas</h2><p>As 8 técnicas que os melhores aprendizes de idiomas do mundo usam</p></div>
+  </div>
+
+  <div class="grid grid-2">
+
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+        <span class="badge badge-blue">Krashen</span>
+        <h3 style="margin:0;">1. Comprehensible Input (i+1)</h3>
+      </div>
+      <p>Consumir conteúdo que você entende <strong>80%</strong> sem esforço, com <strong>20%</strong> de coisa nova. O cérebro absorve gramática e vocabulário <em>naturalmente</em> nesse zona. Estudar gramática isolada é ineficiente.</p>
+    </div>
+
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+        <span class="badge badge-purple">Argüelles</span>
+        <h3 style="margin:0;">2. Shadowing</h3>
+      </div>
+      <p>Repetir áudio nativo em tempo real, copiando entonação, ritmo e pronúncia. Não traduz, só imita. Treina músculos da boca + ouvido + cérebro em uma única prática. 15-20 min/dia transformam sotaque.</p>
+    </div>
+
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+        <span class="badge badge-green">Ebbinghaus</span>
+        <h3 style="margin:0;">3. Spaced Repetition (SRS)</h3>
+      </div>
+      <p>Anki repete cards no momento exato antes de você esquecer. Curva do esquecimento "quebrada" cientificamente. Sempre cards de <strong>frase inteira</strong> com áudio, nunca palavra solta.</p>
+    </div>
+
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+        <span class="badge badge-yellow">Benny Lewis</span>
+        <h3 style="margin:0;">4. "Speak from Day One"</h3>
+      </div>
+      <p>Falar errado desde a primeira semana > esperar estar "pronto". Cada erro corrigido = aprendizado permanente. Vergonha é o maior inimigo do poliglota.</p>
+    </div>
+
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+        <span class="badge badge-red">Kaufmann</span>
+        <h3 style="margin:0;">5. Imersão Artificial</h3>
+      </div>
+      <p>Trocar celular, Netflix, YouTube, jogos, música, Twitter — tudo para inglês. Você está "no Brasil mas vive nos EUA" digitalmente. Exposição passiva soma 1-2h extras por dia "de graça".</p>
+    </div>
+
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+        <span class="badge badge-blue">Lampariello</span>
+        <h3 style="margin:0;">6. Active Recall (não releitura)</h3>
+      </div>
+      <p>Ouvir um áudio → tentar transcrever → comparar com original → repetir. Bem mais poderoso que reler textos. O esforço de "puxar da memória" é o que fixa.</p>
+    </div>
+
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+        <span class="badge badge-purple">Pareto</span>
+        <h3 style="margin:0;">7. As 1000 palavras mágicas</h3>
+      </div>
+      <p>1000 palavras mais frequentes do inglês = <strong>~85% de qualquer conversa cotidiana</strong>. Foque nelas primeiro. Lista no Anki: deck "1000 Most Common English Words".</p>
+    </div>
+
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+        <span class="badge badge-green">Mental Loop</span>
+        <h3 style="margin:0;">8. Mock Thinking</h3>
+      </div>
+      <p>Forçar o cérebro a pensar em inglês durante atividades passivas (banho, caminhada, lavando louça). Comece narrando o que está fazendo: <em>"I'm washing my hands now..."</em>. Liga o "modo inglês" 24/7.</p>
+    </div>
+
+  </div>
+
+  <div class="tip tip-purple" style="margin-top:20px;">
+    <span class="tip-icon">🌟</span>
+    <div class="tip-body">
+      <h4>A regra dos poliglotas top: ENJOY THE PROCESS</h4>
+      <p>Steve Kaufmann (20 idiomas), Luca Lampariello (15+), Benny Lewis (10+): todos repetem que <strong>quem se diverte aprende mais rápido</strong>. Escolha conteúdo que VOCÊ ama (futebol, games, tech, séries) — não material chato de escola.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── 03 ROTINA ─── -->
+<section id="rotina">
+  <div class="section-header">
+    <div class="section-icon icon-orange">⏰</div>
+    <div><h2>03 — Rotina Diária de 2 Horas</h2><p>Como dividir o tempo para cobrir todas as habilidades sem desperdício</p></div>
+  </div>
+
+  <p style="color:var(--muted);font-size:.85rem;margin-bottom:14px;">Distribuição das 120 minutos diários (otimizada para A2 → B1)</p>
+  <div class="table-wrap" style="margin-bottom:24px;">
+    <table class="cmd-table">
+      <thead>
+        <tr>
+          <th>Bloco</th>
+          <th>Atividade</th>
+          <th>Duração</th>
+          <th>Foco</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="cmd">🎧 #1</td>
+          <td class="desc"><strong>Listening ativo</strong> — podcast ou vídeo com transcrição. Ouve → pausa → repete frase. Anota 5-10 expressões novas.</td>
+          <td><span class="badge badge-blue">30 min</span></td>
+          <td>Listening</td>
+        </tr>
+        <tr>
+          <td class="cmd">🗣️ #2</td>
+          <td class="desc"><strong>Shadowing</strong> — pega 2-3 min de áudio nativo, repete por cima copiando entonação. Mesmo áudio durante a semana toda.</td>
+          <td><span class="badge badge-purple">20 min</span></td>
+          <td>Pronúncia</td>
+        </tr>
+        <tr>
+          <td class="cmd">📚 #3</td>
+          <td class="desc"><strong>Anki / SRS</strong> — revisão dos cards do dia + 10-15 cards novos (frases com áudio, não palavras soltas).</td>
+          <td><span class="badge badge-green">20 min</span></td>
+          <td>Vocabulário</td>
+        </tr>
+        <tr>
+          <td class="cmd">💬 #4</td>
+          <td class="desc"><strong>Conversação</strong> — tutor iTalki (3x/sem) ou Speak/ChatGPT voice (4x/sem). Foco em falar, não em "estudar".</td>
+          <td><span class="badge badge-yellow">30 min</span></td>
+          <td>Speaking</td>
+        </tr>
+        <tr>
+          <td class="cmd">✍️ #5</td>
+          <td class="desc"><strong>Writing</strong> — diário curto em inglês (5-8 frases sobre o dia). Passa no ChatGPT pedindo correção com explicação.</td>
+          <td><span class="badge badge-red">10 min</span></td>
+          <td>Writing</td>
+        </tr>
+        <tr>
+          <td class="cmd">🧠 #6</td>
+          <td class="desc"><strong>Imersão passiva</strong> — música, podcast no carro, mock thinking. Não exige atenção total.</td>
+          <td><span class="badge badge-purple">10 min</span></td>
+          <td>Reforço</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="grid grid-2">
+    <div class="card">
+      <h3>🌅 Sugestão de horário (manhã + noite)</h3>
+      <p><strong>Manhã (60 min):</strong> Anki (20) + Listening (30) + Mock thinking (10).<br/>
+      <strong>Noite (60 min):</strong> Shadowing (20) + Conversação (30) + Writing (10).</p>
+    </div>
+    <div class="card">
+      <h3>🚌 Sugestão alternativa (deslocamento)</h3>
+      <p>Aproveite trajetos: Podcast no ônibus/carro = 30 min de listening grátis. Anki no celular em filas/elevadores. Sobram só 90 min "ativos" em casa.</p>
+    </div>
+  </div>
+
+  <div class="tip tip-yellow" style="margin-top:16px;">
+    <span class="tip-icon">⚠️</span>
+    <div class="tip-body">
+      <h4>NUNCA pule o Anki e a conversação</h4>
+      <p>Anki é a base que evita esquecimento. Conversação é a única coisa que ativa vocabulário passivo → ativo. Se um dia o tempo apertar, corte o shadowing ou o writing — não esses dois.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── 04 CRONOGRAMA ─── -->
+<section id="cronograma">
+  <div class="section-header">
+    <div class="section-icon icon-green">📆</div>
+    <div><h2>04 — Cronograma de 12 Semanas</h2><p>Fases de evolução mês a mês com metas verificáveis</p></div>
+  </div>
+
+  <h3 style="margin-bottom:14px;color:var(--accent3);">🏗️ MÊS 1 · Fundação (Semanas 1-4)</h3>
+  <div class="timeline" style="margin-bottom:32px;">
+    <div class="tl-item">
+      <span class="tl-week">Semana 1</span>
+      <h4>Setup completo + 200 palavras essenciais</h4>
+      <p>Instalar Anki, criar conta iTalki, baixar Language Reactor, mudar celular para inglês. Começar deck "1000 Most Common Words" — 20 cards novos/dia. Listening: <em>EnglishClass101 Absolute Beginner</em>.</p>
+    </div>
+    <div class="tl-item">
+      <span class="tl-week">Semana 2</span>
+      <h4>Primeira aula com tutor + presente simples</h4>
+      <p>Aula trial no iTalki (3-5 tutores diferentes, escolha 1-2). Foco: <em>present simple</em>, perguntas básicas, "how are you / what do you do / where are you from". Shadowing começa com áudios de 1 min.</p>
+    </div>
+    <div class="tl-item">
+      <span class="tl-week">Semana 3</span>
+      <h4>Past simple + 500 palavras acumuladas</h4>
+      <p>Vocabulário de rotina: <em>work, sleep, eat, family, weekend</em>. Diário escrito começa: "Yesterday I...". Listening avança para <em>Easy English</em> no YouTube.</p>
+    </div>
+    <div class="tl-item">
+      <span class="tl-week">Semana 4</span>
+      <h4>Future + primeira conversa de 20 min seguidos</h4>
+      <p>Marco: conseguir uma conversa de 20 min com tutor falando sobre você, sem travar muito. <em>Mock test</em>: EF SET (gratuito) — meta = A2 confirmado.</p>
+    </div>
+  </div>
+
+  <h3 style="margin-bottom:14px;color:var(--accent2);">⚡ MÊS 2 · Ativação (Semanas 5-8)</h3>
+  <div class="timeline" style="margin-bottom:32px;">
+    <div class="tl-item" style="border-left-color:var(--accent2);">
+      <span class="tl-week" style="color:var(--accent2);">Semana 5</span>
+      <h4>Phrasal verbs + condicionais</h4>
+      <p>Top 50 phrasal verbs (<em>look up, give up, work out, hang out</em>). Conversação aumenta para 4x/semana. Começa série em inglês com Language Reactor (legenda dupla).</p>
+    </div>
+    <div class="tl-item" style="border-left-color:var(--accent2);">
+      <span class="tl-week" style="color:var(--accent2);">Semana 6</span>
+      <h4>Vocabulário profissional + Inglês técnico</h4>
+      <p>Deck "Tech English" no Anki: <em>deploy, merge, push, commit, refactor, deadline, scope, stakeholder</em>. Lê 1 artigo do Hacker News por dia (manchetes + 1 parágrafo).</p>
+    </div>
+    <div class="tl-item" style="border-left-color:var(--accent2);">
+      <span class="tl-week" style="color:var(--accent2);">Semana 7</span>
+      <h4>Primeiro post público em inglês</h4>
+      <p>Escrever um post no LinkedIn/Twitter em inglês (3-5 frases sobre algo que você sabe). Revisão com Grammarly + ChatGPT. <strong>Romper a barreira do output público</strong>.</p>
+    </div>
+    <div class="tl-item" style="border-left-color:var(--accent2);">
+      <span class="tl-week" style="color:var(--accent2);">Semana 8</span>
+      <h4>Listening B1 + 1500 palavras</h4>
+      <p>Mudança de patamar: <em>BBC 6 Minute English</em> sem legenda. Diário de 10 frases por dia. <em>Mock test</em>: EF SET — meta = B1 inicial.</p>
+    </div>
+  </div>
+
+  <h3 style="margin-bottom:14px;color:var(--accent);">🚀 MÊS 3 · Imersão Total (Semanas 9-12)</h3>
+  <div class="timeline">
+    <div class="tl-item" style="border-left-color:var(--accent);">
+      <span class="tl-week" style="color:var(--accent);">Semana 9</span>
+      <h4>Conteúdo nativo sem muletas</h4>
+      <p>Trocar tutorial-de-aprendiz por conteúdo real: podcasts de tech (<em>Lex Fridman, Acquired, Syntax.fm</em>), vídeos do canal Fireship. Legenda em inglês, nunca em português.</p>
+    </div>
+    <div class="tl-item" style="border-left-color:var(--accent);">
+      <span class="tl-week" style="color:var(--accent);">Semana 10</span>
+      <h4>Simulação de reunião / entrevista</h4>
+      <p>Sessões com tutor focadas em <strong>roleplay profissional</strong>: stand-up, code review, entrevista técnica. Vocabulário de soft-skills.</p>
+    </div>
+    <div class="tl-item" style="border-left-color:var(--accent);">
+      <span class="tl-week" style="color:var(--accent);">Semana 11</span>
+      <h4>Conversação 1h sem trava significativa</h4>
+      <p>Tutor B1+ que cobra mais. Tópicos abstratos: opinião sobre tecnologia, política, futuro. Grava aulas e revisa erros recorrentes.</p>
+    </div>
+    <div class="tl-item" style="border-left-color:var(--accent);">
+      <span class="tl-week" style="color:var(--accent);">Semana 12</span>
+      <h4>Avaliação final + planejamento próxima fase</h4>
+      <p>Mock test final (EF SET ou Cambridge Linguaskill). Meta: <strong>B1 sólido confirmado</strong>. Gravar vídeo de 5 min falando sobre você — comparar com vídeo da semana 1.</p>
+    </div>
+  </div>
+
+  <div class="tip tip-green" style="margin-top:24px;">
+    <span class="tip-icon">🏆</span>
+    <div class="tip-body">
+      <h4>Marcos verificáveis em cada mês</h4>
+      <p><strong>Mês 1:</strong> falar de você por 5 min sem travar · <strong>Mês 2:</strong> entender 70% de um podcast B1 sem legenda · <strong>Mês 3:</strong> reunião profissional simulada de 30 min com tutor.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── 05 LISTENING ─── -->
+<section id="listening">
+  <div class="section-header">
+    <div class="section-icon icon-blue">🎧</div>
+    <div><h2>05 — Listening: O Pulmão do Idioma</h2><p>Como construir ouvido nativo com input progressivo</p></div>
+  </div>
+
+  <div class="grid grid-3" style="margin-bottom:20px;">
+    <div class="card">
+      <span class="badge badge-green">A1-A2 · Mês 1</span>
+      <h3 style="margin-top:8px;">Iniciante absoluto</h3>
+      <p>• <strong>EnglishClass101</strong> (YouTube)<br/>• <strong>Easy English</strong> (entrevistas com legenda dupla)<br/>• <strong>Linguamarina</strong><br/>• Velocidade: 0.75x se precisar</p>
+    </div>
+    <div class="card">
+      <span class="badge badge-yellow">A2-B1 · Mês 2</span>
+      <h3 style="margin-top:8px;">Intermediário inicial</h3>
+      <p>• <strong>BBC 6 Minute English</strong><br/>• <strong>All Ears English</strong><br/>• <strong>Voice of America Learning</strong><br/>• <strong>Luke's English Podcast</strong></p>
+    </div>
+    <div class="card">
+      <span class="badge badge-purple">B1+ · Mês 3</span>
+      <h3 style="margin-top:8px;">Conteúdo nativo</h3>
+      <p>• <strong>Lex Fridman, Acquired</strong><br/>• <strong>Fireship</strong> (tech)<br/>• <strong>Stand-up comedy</strong> (Netflix)<br/>• <strong>Friends, Brooklyn 99</strong> (séries)</p>
+    </div>
+  </div>
+
+  <p style="color:var(--muted);font-size:.85rem;margin-bottom:10px;">Técnica das 3 passadas (uma única faixa, 10-15 min)</p>
+  <pre><code><span style="color:#475569"># Passada 1 — escuta passiva</span>
+ouve uma vez sem pausar, só pega a <span style="color:#67e8f9">"vibe"</span> do áudio
+
+<span style="color:#475569"># Passada 2 — escuta ativa com transcrição</span>
+abre o transcript, pausa a cada frase, repete em voz alta
+
+<span style="color:#475569"># Passada 3 — escuta sem transcrição</span>
+fecha o transcript, escuta de novo — agora você entende 90%+
+adiciona 5-10 expressões novas no Anki como cards de frase</code></pre>
+
+  <div class="tip tip-blue" style="margin-top:16px;">
+    <span class="tip-icon">💡</span>
+    <div class="tip-body">
+      <h4>Language Reactor é mágico no Netflix/YouTube</h4>
+      <p>Extensão grátis do Chrome. Mostra legenda dupla (inglês + português), permite clicar em qualquer palavra para traduzir, salva vocabulário direto pro Anki, e tem botão de "repetir frase" embutido. Mude jogo a partir da semana 2.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── 06 SPEAKING ─── -->
+<section id="speaking">
+  <div class="section-header">
+    <div class="section-icon icon-purple">🗣️</div>
+    <div><h2>06 — Speaking & Shadowing</h2><p>Como ativar o vocabulário passivo e perder o medo de falar</p></div>
+  </div>
+
+  <div class="grid grid-2" style="margin-bottom:20px;">
+    <div class="card">
+      <h3>👨‍🏫 Tutor humano (iTalki ou Preply)</h3>
+      <p><strong>Frequência:</strong> 3-4x semana, sessões de 30-45 min.<br/>
+      <strong>Preço:</strong> US$ 8-15/h com tutores de Filipinas/África ou bons community tutors.<br/>
+      <strong>Critério:</strong> escolha quem PUXA conversa, não quem dá aula clássica de gramática.</p>
+    </div>
+    <div class="card">
+      <h3>🤖 AI Voice (Speak.com, ChatGPT)</h3>
+      <p><strong>Quando usar:</strong> dias sem tutor (3x/sem). Sem julgamento, sem vergonha.<br/>
+      <strong>ChatGPT Voice Mode:</strong> peça para te corrigir após cada resposta + sugerir formas mais naturais.<br/>
+      <strong>Vantagem:</strong> conversa qualquer horário, infinita paciência.</p>
+    </div>
+    <div class="card">
+      <h3>📱 Tandem / HelloTalk (grátis)</h3>
+      <p>Encontre brasileiros aprendendo inglês e americanos aprendendo português. Troca de áudios curtos. Bom para complemento, não para base.</p>
+    </div>
+    <div class="card">
+      <h3>👥 Discord / Slack em inglês</h3>
+      <p>Entre em comunidades de tech, gaming ou hobby (em inglês). Você lê e responde por escrito várias vezes ao dia — ativação contínua sem custo.</p>
+    </div>
+  </div>
+
+  <p style="color:var(--muted);font-size:.85rem;margin-bottom:10px;">Protocolo Argüelles de Shadowing — passo a passo</p>
+  <pre><code><span style="color:#475569"># Pré-requisito: pega um áudio com transcript de 1-3 min</span>
+<span style="color:#475569"># Bom material: TED-Ed, EnglishClass101, ESLPod</span>
+
+<span style="color:#fbbf24">Etapa 1</span> — Blind shadowing
+  Anda pela casa, fone no ouvido, repete TUDO o que ouve,
+  com 0.5s de atraso. Sem entender, só imitando sons.
+
+<span style="color:#fbbf24">Etapa 2</span> — Reading shadowing
+  Mesmo áudio, agora com transcript na frente.
+  Continua repetindo, mas agora "vendo" as palavras.
+
+<span style="color:#fbbf24">Etapa 3</span> — Free shadowing
+  Sem transcript, focado em entonação e ritmo.
+  Grava sua voz e compara com o original.
+
+<span style="color:#475569"># Use o MESMO áudio por 5-7 dias seguidos</span>
+<span style="color:#475569"># Troca quando estiver "fácil demais"</span></code></pre>
+
+  <div class="tip tip-red" style="margin-top:16px;">
+    <span class="tip-icon">🔥</span>
+    <div class="tip-body">
+      <h4>Regra anti-vergonha</h4>
+      <p>Conversação não é "prova". É <strong>treino</strong>. Tutor é pago para te ouvir errar. Errar 50 vezes uma palavra é o caminho mais rápido para acertar pra sempre. Quem fala errado e muito > quem fala certo e pouco.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── 07 VOCAB / ANKI ─── -->
+<section id="vocab">
+  <div class="section-header">
+    <div class="section-icon icon-green">📚</div>
+    <div><h2>07 — Vocabulário & Anki (SRS)</h2><p>Como construir 2000 palavras ativas sem esquecer no caminho</p></div>
+  </div>
+
+  <div class="grid grid-2" style="margin-bottom:20px;">
+    <div>
+      <p style="color:var(--muted);font-size:.85rem;margin-bottom:10px;">Decks recomendados (Anki, grátis)</p>
+      <div class="file-tree">
+<span class="ft-dir">Decks essenciais/</span>
+├── <span class="ft-doc">4000 English Words (Top 1000)</span>  <span class="ft-comment"># base Pareto</span>
+├── <span class="ft-doc">Practical English Phrases</span>     <span class="ft-comment"># frases prontas</span>
+├── <span class="ft-doc">Phrasal Verbs in Use</span>          <span class="ft-comment"># essencial</span>
+├── <span class="ft-spec">Seu deck pessoal</span>               <span class="ft-comment"># frases que você</span>
+│                                  <span class="ft-comment">  encontrou no dia</span>
+└── <span class="ft-spec">Tech English (custom)</span>          <span class="ft-comment"># mês 2+</span>
+      </div>
+    </div>
+    <div>
+      <p style="color:var(--muted);font-size:.85rem;margin-bottom:10px;">Anatomia de um bom card</p>
+      <pre style="font-size:.78rem;"><code><span style="color:#34d399"># Frente</span>
+She <strong>______ up</strong> at 6am every day.
+<span style="color:#475569">(audio: native sentence)</span>
+
+<span style="color:#34d399"># Verso</span>
+<strong>wakes</strong> · acordar
+<em>Exemplo:</em> I wake up early on Mondays.
+<em>Phrasal:</em> wake up = acordar (verbo)
+<span style="color:#475569">(audio: pronunciation)</span></code></pre>
+    </div>
+  </div>
+
+  <p style="color:var(--muted);font-size:.85rem;margin-bottom:14px;">Regras de ouro do Anki</p>
+  <div class="table-wrap" style="margin-bottom:20px;">
+    <table class="cmd-table">
+      <thead>
+        <tr><th>Faça</th><th>Não faça</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="desc">✅ Cards de <strong>frase com lacuna</strong> + áudio nativo</td>
+          <td class="desc">❌ Cards de palavra solta sem contexto</td>
+        </tr>
+        <tr>
+          <td class="desc">✅ 10-15 cards novos/dia (sustentável)</td>
+          <td class="desc">❌ 50 cards novos no dia (insustentável)</td>
+        </tr>
+        <tr>
+          <td class="desc">✅ Revisar TODOS OS DIAS, sem falhar</td>
+          <td class="desc">❌ Pular 3 dias e ter 300 cards atrasados</td>
+        </tr>
+        <tr>
+          <td class="desc">✅ Apertar "again" sem dó quando travar</td>
+          <td class="desc">❌ Marcar "good" por orgulho — engana só você</td>
+        </tr>
+        <tr>
+          <td class="desc">✅ Adicionar palavras que você ENCONTROU naturalmente</td>
+          <td class="desc">❌ Decorar listas aleatórias do GRE/SAT</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="tip tip-purple">
+    <span class="tip-icon">🧠</span>
+    <div class="tip-body">
+      <h4>Meta de vocabulário acumulado</h4>
+      <p><strong>Dia 30:</strong> 500 palavras ativas · <strong>Dia 60:</strong> 1200 · <strong>Dia 90:</strong> 2000+. Lembre: o objetivo é <em>uso ativo</em>, não só reconhecer passivamente.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── 08 WRITING ─── -->
+<section id="writing">
+  <div class="section-header">
+    <div class="section-icon icon-red">✍️</div>
+    <div><h2>08 — Writing & Inglês Técnico</h2><p>Como escrever e-mails, posts e PRs com inglês profissional</p></div>
+  </div>
+
+  <div class="grid grid-2" style="margin-bottom:20px;">
+    <div class="card">
+      <span class="badge badge-blue">Diário (todo dia)</span>
+      <h3 style="margin-top:8px;">📓 Diário pessoal de 5-10 frases</h3>
+      <p>Sobre o dia, planos, opiniões. Passa no ChatGPT pedindo: "Correct my English. Explain each mistake in Portuguese and suggest 1 more natural phrasing." Cole as correções no Anki.</p>
+    </div>
+    <div class="card">
+      <span class="badge badge-yellow">2x semana</span>
+      <h3 style="margin-top:8px;">💼 E-mail profissional simulado</h3>
+      <p>Escreva um e-mail de trabalho fictício (pedir feedback, agendar reunião, reportar bug). Use templates de <em>HBR Guide to Better Business Writing</em>.</p>
+    </div>
+    <div class="card">
+      <span class="badge badge-purple">Semanal</span>
+      <h3 style="margin-top:8px;">📝 Post público (Twitter/LinkedIn)</h3>
+      <p>1 post curto em inglês por semana. Algo que você sabe (tech, hobby, opinião). Romper a barreira do output público destrava muito mais do que mil exercícios.</p>
+    </div>
+    <div class="card">
+      <span class="badge badge-green">Diário (após mês 2)</span>
+      <h3 style="margin-top:8px;">🔧 Code reviews / commits em inglês</h3>
+      <p>Todo commit message e PR description em inglês. <em>"Fix race condition in worker pool"</em>, <em>"Refactor auth middleware to support OAuth2"</em>. Vocabulário técnico vira reflexo.</p>
+    </div>
+  </div>
+
+  <p style="color:var(--muted);font-size:.85rem;margin-bottom:10px;">Templates úteis de inglês técnico (memorize estes)</p>
+  <pre><code><span style="color:#475569"># E-mail / Slack — pedindo ajuda</span>
+"Hey, do you have a minute? I'm running into an issue with X."
+"Could you take a look at this when you have a chance?"
+"I'd appreciate your feedback on this approach."
+
+<span style="color:#475569"># Reunião — opinião / discordância polida</span>
+"That's a great point, but I'd push back on..."
+"I see where you're coming from, however..."
+"Just to play devil's advocate..."
+
+<span style="color:#475569"># PR / Code review</span>
+"LGTM with a few nits." <span style="color:#475569">(looks good to me)</span>
+"Could we extract this into a separate function?"
+"This might cause issues when X happens — thoughts?"
+
+<span style="color:#475569"># Stand-up daily</span>
+"Yesterday I worked on X. Today I'm going to focus on Y."
+"I'm blocked on Z, need help from someone."
+"No blockers, things are moving forward."</code></pre>
+
+  <div class="tip tip-blue" style="margin-top:16px;">
+    <span class="tip-icon">🚀</span>
+    <div class="tip-body">
+      <h4>Truque: ChatGPT como "professor pessoal" 24/7</h4>
+      <p>Cole seu texto e peça: <em>"Act as an English teacher. Correct my writing, explain mistakes in Portuguese, give 2 alternative natural phrasings, and rate my level (CEFR)."</em> Mais útil que qualquer Grammarly.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── 09 FERRAMENTAS ─── -->
+<section id="ferramentas">
+  <div class="section-header">
+    <div class="section-icon icon-yellow">🛠️</div>
+    <div><h2>09 — Stack Completo de Ferramentas</h2><p>Apps, sites e extensões que formam o ecossistema do experimento</p></div>
+  </div>
+
+  <div class="grid grid-3">
+    <div class="card">
+      <h3>🎧 Listening</h3>
+      <p>• <strong>YouTube</strong> (canais ESL)<br/>• <strong>Spotify Podcasts</strong><br/>• <strong>BBC Learning English</strong> (app)<br/>• <strong>Language Reactor</strong> (Chrome ext)</p>
+    </div>
+    <div class="card">
+      <h3>📚 SRS / Vocabulário</h3>
+      <p>• <strong>Anki</strong> (desktop + mobile)<br/>• <strong>AnkiWeb</strong> (sync)<br/>• <strong>Quizlet</strong> (alternativa leve)<br/>• <strong>Drops</strong> (gamificado)</p>
+    </div>
+    <div class="card">
+      <h3>🗣️ Conversação</h3>
+      <p>• <strong>iTalki</strong> (tutor pago)<br/>• <strong>Cambly</strong> (nativo on-demand)<br/>• <strong>Preply</strong> (alternativa iTalki)<br/>• <strong>Tandem / HelloTalk</strong> (grátis)</p>
+    </div>
+    <div class="card">
+      <h3>🤖 AI Companions</h3>
+      <p>• <strong>ChatGPT Voice</strong><br/>• <strong>Claude</strong> (escrita + correção)<br/>• <strong>Speak.com</strong><br/>• <strong>ELSA Speak</strong> (pronúncia)</p>
+    </div>
+    <div class="card">
+      <h3>✍️ Writing</h3>
+      <p>• <strong>Grammarly</strong> (gratuito ok)<br/>• <strong>DeepL Write</strong><br/>• <strong>ChatGPT</strong> (revisão profunda)<br/>• <strong>LanguageTool</strong></p>
+    </div>
+    <div class="card">
+      <h3>📺 Imersão / Entretenimento</h3>
+      <p>• <strong>Netflix + Language Reactor</strong><br/>• <strong>YouTube em inglês</strong><br/>• <strong>Twitch streamers ENG</strong><br/>• <strong>Audible / podcasts</strong></p>
+    </div>
+    <div class="card">
+      <h3>📊 Testes / Avaliação</h3>
+      <p>• <strong>EF SET</strong> (grátis, 50 min)<br/>• <strong>Cambridge Linguaskill</strong><br/>• <strong>British Council placement</strong><br/>• <strong>Duolingo English Test</strong></p>
+    </div>
+    <div class="card">
+      <h3>📰 Reading</h3>
+      <p>• <strong>Hacker News</strong> (tech)<br/>• <strong>The Hustle</strong> (newsletter)<br/>• <strong>BBC News</strong><br/>• <strong>Medium / Substack</strong></p>
+    </div>
+    <div class="card">
+      <h3>🎮 Imersão divertida</h3>
+      <p>• <strong>Reddit</strong> (r/learnenglish)<br/>• <strong>Discord</strong> em inglês<br/>• <strong>Games em inglês</strong><br/>• <strong>Wikipedia.en</strong> (curiosidades)</p>
+    </div>
+  </div>
+
+  <div class="tip tip-green" style="margin-top:20px;">
+    <span class="tip-icon">💰</span>
+    <div class="tip-body">
+      <h4>Orçamento estimado para 3 meses</h4>
+      <p><strong>Essencial:</strong> iTalki (~R$ 40-80/h × 3-4 aulas/sem × 12 sem) ≈ R$ 1.500-3.000 · <strong>ChatGPT Plus:</strong> ~R$ 110/mês × 3 = R$ 330 · <strong>Total mínimo:</strong> R$ 1.800 · <strong>Versão zero-custo:</strong> só ChatGPT free + Tandem + YouTube (funciona, mas evolui mais devagar).</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── 10 MÉTRICAS ─── -->
+<section id="metricas">
+  <div class="section-header">
+    <div class="section-icon icon-orange">📊</div>
+    <div><h2>10 — Métricas, Tracking & Validação</h2><p>Como saber objetivamente se está progredindo</p></div>
+  </div>
+
+  <p style="color:var(--muted);font-size:.85rem;margin-bottom:14px;">KPIs semanais — preencha numa planilha ou app de tracking</p>
+  <div class="table-wrap" style="margin-bottom:24px;">
+    <table class="cmd-table">
+      <thead>
+        <tr><th>Métrica</th><th>Meta semanal</th><th>Como medir</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="desc"><strong>Horas totais de estudo</strong></td>
+          <td><span class="badge badge-blue">14h (2h × 7)</span></td>
+          <td class="desc">Toggl / RescueTime / planilha</td>
+        </tr>
+        <tr>
+          <td class="desc"><strong>Cards Anki revisados</strong></td>
+          <td><span class="badge badge-green">700+ revisões</span></td>
+          <td class="desc">Stats do próprio Anki</td>
+        </tr>
+        <tr>
+          <td class="desc"><strong>Sessões de conversação</strong></td>
+          <td><span class="badge badge-purple">3-4 sessões</span></td>
+          <td class="desc">Calendário iTalki + AI sessions</td>
+        </tr>
+        <tr>
+          <td class="desc"><strong>Minutos de listening</strong></td>
+          <td><span class="badge badge-yellow">≥ 240 min</span></td>
+          <td class="desc">Histórico Spotify/YouTube</td>
+        </tr>
+        <tr>
+          <td class="desc"><strong>Palavras escritas no diário</strong></td>
+          <td><span class="badge badge-red">≥ 500 palavras</span></td>
+          <td class="desc">Contador do Word/Notion</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p style="color:var(--muted);font-size:.85rem;margin-bottom:10px;">Checklist mensal de marcos</p>
+  <div class="card" style="margin-bottom:20px;">
+    <ul class="checklist">
+      <li><strong>Mês 1:</strong> Conseguir uma conversa de 15-20 min com tutor sem desistir</li>
+      <li><strong>Mês 1:</strong> Anki com ≥ 500 cards maduros</li>
+      <li><strong>Mês 1:</strong> EF SET resultado ≥ A2</li>
+      <li><strong>Mês 2:</strong> Entender 70% de um podcast B1 sem legenda</li>
+      <li><strong>Mês 2:</strong> Publicar 1 post público em inglês</li>
+      <li><strong>Mês 2:</strong> EF SET resultado ≥ B1 inicial</li>
+      <li><strong>Mês 3:</strong> Simular reunião profissional de 30 min</li>
+      <li><strong>Mês 3:</strong> Assistir série/filme nativo com legenda em inglês confortavelmente</li>
+      <li><strong>Mês 3:</strong> EF SET resultado ≥ B1 sólido (50-60 pontos)</li>
+      <li><strong>Marco extra:</strong> Vídeo de 5 min falando sobre você (semana 1 vs semana 12)</li>
+    </ul>
+  </div>
+
+  <div class="tip tip-yellow">
+    <span class="tip-icon">📈</span>
+    <div class="tip-body">
+      <h4>O "valley of despair" da semana 5-7</h4>
+      <p>Por volta da metade do experimento você sentirá que <strong>não está mais evoluindo</strong>. Isso é normal e científico (plateau de Ebbinghaus). NÃO desista. Em 1-2 semanas há um salto qualitativo grande — chamado <em>"the silent period"</em> por Krashen. Confie no processo.</p>
+    </div>
+  </div>
+
+  <div class="tip tip-purple" style="margin-top:12px;">
+    <span class="tip-icon">🎬</span>
+    <div class="tip-body">
+      <h4>O teste decisivo do dia 90</h4>
+      <p>Grave um vídeo de 5 minutos falando: <em>(1) Quem você é · (2) O que faz no trabalho · (3) Um problema técnico que resolveu recentemente · (4) Sua opinião sobre IA · (5) Planos pros próximos 12 meses</em>. Compare com um vídeo gravado no dia 1. Se a diferença for <strong>óbvia para qualquer ouvinte</strong>, você ganhou o experimento.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>Experimento Inglês · 50% Fluente em 3 Meses · Método Poliglota</p>
+  <p style="margin-top:6px;">Baseado em <strong>Krashen, Kaufmann, Argüelles, Lampariello e Lewis</strong> · Adaptado para perfil A2 → B1 com foco multidimensional</p>
+  <p style="margin-top:6px;font-size:.78rem;">Lembre-se: <em>consistency beats intensity</em>. Todo dia, mesmo que pouco.</p>
+</footer>
+
+</body>
+</html>
