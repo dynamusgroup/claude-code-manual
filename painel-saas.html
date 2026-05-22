@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Painel de Automações — Gestão de Clientes</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #22263a;
+    --border: #2e3248;
+    --accent: #d97706;
+    --accent2: #7c3aed;
+    --accent3: #0ea5e9;
+    --green: #10b981;
+    --red: #ef4444;
+    --yellow: #f59e0b;
+    --text: #e2e8f0;
+    --muted: #8892a4;
+    --code-bg: #131720;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  button { font-family: inherit; cursor: pointer; }
+  a { color: inherit; }
+
+  /* ============ LOGIN ============ */
+  #login-screen {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #1a0533 0%, #0f1117 45%, #001a2e 100%);
+    padding: 24px;
+  }
+  .login-card {
+    width: 100%;
+    max-width: 380px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 40px 34px;
+  }
+  .login-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 800;
+    font-size: 1.15rem;
+    margin-bottom: 4px;
+  }
+  .login-logo .mark {
+    width: 34px; height: 34px;
+    border-radius: 9px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem;
+  }
+  .login-card p.sub { color: var(--muted); font-size: 0.88rem; margin-bottom: 26px; }
+  .field { margin-bottom: 16px; }
+  .field label {
+    display: block;
+    font-size: 0.78rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 6px;
+  }
+  .field input {
+    width: 100%;
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    padding: 11px 13px;
+    color: var(--text);
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .field input:focus { border-color: var(--accent2); }
+  .btn {
+    border: none;
+    border-radius: 9px;
+    padding: 11px 18px;
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: #fff;
+    background: var(--accent2);
+    transition: filter 0.15s, transform 0.05s;
+  }
+  .btn:hover { filter: brightness(1.12); }
+  .btn:active { transform: translateY(1px); }
+  .btn-block { width: 100%; margin-top: 8px; }
+  .btn-accent { background: var(--accent); }
+  .btn-green { background: var(--green); }
+  .btn-red { background: var(--red); }
+  .btn-ghost {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text);
+  }
+  .btn-ghost:hover { border-color: var(--accent2); filter: none; }
+  .btn-sm { padding: 6px 12px; font-size: 0.8rem; }
+  .login-hint {
+    margin-top: 18px;
+    font-size: 0.78rem;
+    color: var(--muted);
+    text-align: center;
+  }
+
+  /* ============ APP SHELL ============ */
+  #app { display: none; min-height: 100vh; }
+  #app.active { display: flex; }
+
+  .sidebar {
+    width: 232px;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0; bottom: 0; left: 0;
+    z-index: 30;
+  }
+  .sidebar-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 20px 22px;
+    font-weight: 800;
+    font-size: 1.02rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .sidebar-logo .mark {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem;
+  }
+  .nav { padding: 14px 12px; flex: 1; }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    width: 100%;
+    text-align: left;
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    padding: 10px 12px;
+    border-radius: 9px;
+    font-size: 0.9rem;
+    margin-bottom: 3px;
+    transition: background 0.15s, color 0.15s;
+  }
+  .nav-item .ico { font-size: 1.05rem; width: 20px; text-align: center; }
+  .nav-item:hover { background: var(--surface2); color: var(--text); }
+  .nav-item.active { background: rgba(124,58,237,0.16); color: #c4b5fd; }
+  .nav-item .pill {
+    margin-left: auto;
+    background: var(--red);
+    color: #fff;
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 1px 7px;
+    border-radius: 10px;
+  }
+  .sidebar-foot {
+    padding: 14px 16px;
+    border-top: 1px solid var(--border);
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+  .sidebar-foot .who { color: var(--text); font-weight: 600; }
+
+  .main {
+    margin-left: 232px;
+    flex: 1;
+    min-width: 0;
+  }
+  .topbar {
+    height: 62px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    display: flex;
+    align-items: center;
+    padding: 0 28px;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+  }
+  .topbar h1 { font-size: 1.12rem; font-weight: 700; }
+  .topbar .spacer { flex: 1; }
+  .topbar .date { color: var(--muted); font-size: 0.85rem; }
+  .content { padding: 28px; max-width: 1180px; }
+
+  .view { display: none; }
+  .view.active { display: block; }
+
+  /* ============ COMPONENTS ============ */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .kpi {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .kpi::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--accent2);
+  }
+  .kpi.k-green::before { background: var(--green); }
+  .kpi.k-orange::before { background: var(--accent); }
+  .kpi.k-blue::before { background: var(--accent3); }
+  .kpi .label {
+    font-size: 0.76rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .kpi .value { font-size: 1.85rem; font-weight: 800; margin-top: 8px; }
+  .kpi .value.green { color: var(--green); }
+  .kpi .value.orange { color: var(--accent); }
+  .kpi .hint { font-size: 0.8rem; color: var(--muted); margin-top: 4px; }
+
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 22px;
+  }
+  .panel-head {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .panel-head h2 { font-size: 1rem; font-weight: 700; }
+  .panel-head .spacer { flex: 1; }
+  .panel-body { padding: 18px 20px; }
+
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 22px;
+  }
+  @media(max-width: 860px){ .grid-2 { grid-template-columns: 1fr; } }
+
+  /* progress bar */
+  .bar {
+    height: 10px;
+    border-radius: 6px;
+    background: var(--code-bg);
+    overflow: hidden;
+    display: flex;
+  }
+  .bar .seg-green { background: var(--green); }
+  .bar .seg-orange { background: var(--accent); }
+  .bar-legend {
+    display: flex;
+    gap: 18px;
+    margin-top: 12px;
+    font-size: 0.84rem;
+  }
+  .bar-legend .dot {
+    width: 9px; height: 9px; border-radius: 3px; display: inline-block; margin-right: 6px;
+  }
+
+  /* table */
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+  th {
+    text-align: left;
+    color: var(--muted);
+    font-size: 0.74rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  td {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+  }
+  tr:last-child td { border-bottom: none; }
+  tbody tr { transition: background 0.12s; }
+  tbody tr:hover { background: var(--surface2); }
+  .cell-empresa { font-weight: 600; }
+  .cell-sub { color: var(--muted); font-size: 0.8rem; }
+
+  .badge {
+    display: inline-block;
+    font-size: 0.74rem;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+  .badge-green { background: rgba(16,185,129,0.16); color: #34d399; }
+  .badge-red { background: rgba(239,68,68,0.16); color: #f87171; }
+  .badge-yellow { background: rgba(245,158,11,0.16); color: #fbbf24; }
+  .badge-blue { background: rgba(14,165,233,0.16); color: #38bdf8; }
+  .badge-gray { background: rgba(136,146,164,0.16); color: var(--muted); }
+
+  .tabs {
+    display: flex;
+    gap: 4px;
+    background: var(--code-bg);
+    padding: 4px;
+    border-radius: 9px;
+  }
+  .tab {
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    padding: 7px 16px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+  .tab.active { background: var(--surface2); color: var(--text); }
+
+  .icon-actions { display: flex; gap: 6px; }
+  .icon-btn {
+    width: 32px; height: 32px;
+    border-radius: 7px;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+    text-decoration: none;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .icon-btn:hover { border-color: var(--accent2); }
+  .icon-btn.wa:hover { border-color: var(--green); background: rgba(16,185,129,0.12); }
+  .icon-btn.mail:hover { border-color: var(--accent3); background: rgba(14,165,233,0.12); }
+
+  .days-tag { font-weight: 700; font-size: 0.86rem; }
+  .days-ok { color: var(--green); }
+  .days-warn { color: var(--yellow); }
+  .days-late { color: var(--red); }
+
+  /* problem cards */
+  .prob-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--red);
+    border-radius: 10px;
+    padding: 16px 18px;
+    margin-bottom: 12px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .prob-card.sev-medium { border-left-color: var(--yellow); }
+  .prob-card.sev-resolved { border-left-color: var(--green); opacity: 0.7; }
+  .prob-ico {
+    font-size: 1.3rem;
+    width: 40px; height: 40px;
+    border-radius: 9px;
+    background: var(--surface2);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .prob-body { flex: 1; min-width: 0; }
+  .prob-body h3 { font-size: 0.95rem; font-weight: 700; }
+  .prob-body .meta { font-size: 0.8rem; color: var(--muted); margin: 2px 0 6px; }
+  .prob-body .desc { font-size: 0.86rem; }
+  .prob-actions { display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; }
+
+  .empty {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  .empty .big { font-size: 2.2rem; display: block; margin-bottom: 8px; }
+
+  /* ============ MODAL ============ */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 50;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .modal-overlay.active { display: flex; }
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    width: 100%;
+    max-width: 460px;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  .modal-head {
+    padding: 20px 22px 14px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .modal-avatar {
+    width: 46px; height: 46px;
+    border-radius: 11px;
+    background: linear-gradient(135deg, var(--accent2), var(--accent3));
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+  .modal-head h2 { font-size: 1.1rem; }
+  .modal-head .sub { color: var(--muted); font-size: 0.84rem; }
+  .modal-close {
+    margin-left: auto;
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    font-size: 1.3rem;
+    line-height: 1;
+  }
+  .modal-body { padding: 18px 22px; }
+  .info-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 9px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.88rem;
+  }
+  .info-row:last-of-type { border-bottom: none; }
+  .info-row .k { color: var(--muted); }
+  .info-row .v { font-weight: 600; text-align: right; }
+  .modal-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+  }
+  .modal-actions .btn { flex: 1; min-width: 130px; }
+
+  .section-title {
+    font-size: 0.78rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin: 18px 0 8px;
+  }
+
+  /* form */
+  .form-row { display: flex; gap: 12px; }
+  .form-row .field { flex: 1; }
+
+  /* toast */
+  #toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--green);
+    padding: 12px 20px;
+    border-radius: 9px;
+    font-size: 0.88rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s, transform 0.25s;
+    z-index: 80;
+  }
+  #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  .proto-note {
+    background: rgba(124,58,237,0.1);
+    border: 1px solid rgba(124,58,237,0.3);
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 0.82rem;
+    color: #c4b5fd;
+    margin-bottom: 20px;
+  }
+
+  @media(max-width: 720px){
+    .sidebar { transform: translateX(-100%); transition: transform 0.2s; }
+    .sidebar.open { transform: translateX(0); }
+    .main { margin-left: 0; }
+    .menu-toggle { display: inline-flex !important; }
+  }
+  .menu-toggle {
+    display: none;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    width: 36px; height: 36px;
+    align-items: center; justify-content: center;
+    color: var(--text);
+    margin-right: 14px;
+    font-size: 1.1rem;
+  }
+</style>
+</head>
+<body>
+
+<!-- ================= LOGIN ================= -->
+<div id="login-screen">
+  <form class="login-card" onsubmit="doLogin(event)">
+    <div class="login-logo">
+      <span class="mark">&#9889;</span>
+      <span>AutoPainel</span>
+    </div>
+    <p class="sub">Gestão de automações de IA</p>
+
+    <div class="field">
+      <label for="login-email">E-mail</label>
+      <input id="login-email" type="email" value="equipe@autopainel.com" required />
+    </div>
+    <div class="field">
+      <label for="login-pass">Senha</label>
+      <input id="login-pass" type="password" value="123456" required />
+    </div>
+    <button class="btn btn-block" type="submit">Entrar</button>
+    <p class="login-hint">Acesso restrito à equipe. Protótipo de demonstração.</p>
+  </form>
+</div>
+
+<!-- ================= APP ================= -->
+<div id="app">
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <span class="mark">&#9889;</span>
+      <span>AutoPainel</span>
+    </div>
+    <nav class="nav">
+      <button class="nav-item active" data-view="dashboard" onclick="go('dashboard')">
+        <span class="ico">&#128202;</span> Dashboard
+      </button>
+      <button class="nav-item" data-view="clientes" onclick="go('clientes')">
+        <span class="ico">&#128101;</span> Clientes
+      </button>
+      <button class="nav-item" data-view="pagamentos" onclick="go('pagamentos')">
+        <span class="ico">&#128181;</span> Pagamentos
+      </button>
+      <button class="nav-item" data-view="problemas" onclick="go('problemas')">
+        <span class="ico">&#9888;&#65039;</span> Problemas
+        <span class="pill" id="prob-pill">0</span>
+      </button>
+      <button class="nav-item" data-view="funcionarios" onclick="go('funcionarios')">
+        <span class="ico">&#128100;</span> Funcionários
+      </button>
+    </nav>
+    <div class="sidebar-foot">
+      <div class="who" id="foot-name">Equipe</div>
+      <div id="foot-email">equipe@autopainel.com</div>
+      <button class="btn btn-ghost btn-sm" style="margin-top:10px;width:100%" onclick="logout()">Sair</button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <button class="menu-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">&#9776;</button>
+      <h1 id="page-title">Dashboard</h1>
+      <div class="spacer"></div>
+      <div class="date" id="today-label"></div>
+    </div>
+
+    <div class="content">
+
+      <!-- ===== DASHBOARD ===== -->
+      <div class="view active" id="view-dashboard">
+        <div class="proto-note">
+          Protótipo visual — dados de exemplo. As ações (pausar n8n, login, alertas) ainda não estão conectadas ao backend.
+        </div>
+        <div class="kpi-grid">
+          <div class="kpi k-green">
+            <div class="label">&#128176; Faturamento mensal</div>
+            <div class="value" id="kpi-faturamento">R$ 0</div>
+            <div class="hint">Receita prevista de clientes ativos</div>
+          </div>
+          <div class="kpi k-green">
+            <div class="label">&#9989; Já recebido</div>
+            <div class="value green" id="kpi-recebido">R$ 0</div>
+            <div class="hint" id="kpi-recebido-hint">0 faturas pagas</div>
+          </div>
+          <div class="kpi k-orange">
+            <div class="label">&#9203; A receber</div>
+            <div class="value orange" id="kpi-receber">R$ 0</div>
+            <div class="hint" id="kpi-receber-hint">0 faturas em aberto</div>
+          </div>
+          <div class="kpi k-blue">
+            <div class="label">&#128101; Clientes</div>
+            <div class="value" id="kpi-clientes">0</div>
+            <div class="hint" id="kpi-clientes-hint">0 ativos</div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="panel">
+            <div class="panel-head"><h2>Recebido x A receber</h2></div>
+            <div class="panel-body">
+              <div class="bar" id="rev-bar">
+                <div class="seg-green" style="width:60%"></div>
+                <div class="seg-orange" style="width:40%"></div>
+              </div>
+              <div class="bar-legend">
+                <span><span class="dot" style="background:var(--green)"></span><strong id="leg-recebido">R$ 0</strong> recebido</span>
+                <span><span class="dot" style="background:var(--accent)"></span><strong id="leg-receber">R$ 0</strong> a receber</span>
+              </div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><h2>Situação dos clientes</h2></div>
+            <div class="panel-body">
+              <div class="bar" id="cli-bar">
+                <div class="seg-green" style="width:70%"></div>
+                <div class="seg-orange" style="width:30%"></div>
+              </div>
+              <div class="bar-legend">
+                <span><span class="dot" style="background:var(--green)"></span><strong id="leg-ativos">0</strong> ativos</span>
+                <span><span class="dot" style="background:var(--accent)"></span><strong id="leg-inativos">0</strong> inativos / pausados</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <h2>&#9888;&#65039; Vencimentos próximos</h2>
+            <div class="spacer"></div>
+            <button class="btn btn-ghost btn-sm" onclick="go('pagamentos')">Ver pagamentos</button>
+          </div>
+          <div class="panel-body" style="padding:0">
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr><th>Empresa</th><th>Vencimento</th><th>Situação</th><th>Status</th></tr>
+                </thead>
+                <tbody id="dash-venc-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== CLIENTES ===== -->
+      <div class="view" id="view-clientes">
+        <div class="panel">
+          <div class="panel-head">
+            <h2>Clientes</h2>
+            <div class="spacer"></div>
+            <div class="tabs" id="cli-tabs">
+              <button class="tab active" onclick="setCliTab('todos',this)">Todos</button>
+              <button class="tab" onclick="setCliTab('ativo',this)">Ativos</button>
+              <button class="tab" onclick="setCliTab('inativo',this)">Inativos</button>
+            </div>
+          </div>
+          <div class="panel-body" style="padding:0">
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr><th>Empresa</th><th>Contato</th><th>Plano</th><th>Status</th><th>Vencimento</th><th>Contato rápido</th></tr>
+                </thead>
+                <tbody id="clientes-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== PAGAMENTOS ===== -->
+      <div class="view" id="view-pagamentos">
+        <div class="kpi-grid">
+          <div class="kpi k-green">
+            <div class="label">&#9989; Em dia</div>
+            <div class="value green" id="pg-emdia">0</div>
+          </div>
+          <div class="kpi k-orange">
+            <div class="label">&#9203; Aguardando pagamento</div>
+            <div class="value orange" id="pg-pendente">0</div>
+          </div>
+          <div class="kpi">
+            <div class="label" style="color:var(--red)">&#128308; Inadimplentes</div>
+            <div class="value" style="color:var(--red)" id="pg-inadimplente">0</div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head">
+            <h2>Controle de faturas</h2>
+            <div class="spacer"></div>
+            <span class="badge badge-gray">Tolerância: 3 dias após o vencimento</span>
+          </div>
+          <div class="panel-body" style="padding:0">
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr><th>Empresa</th><th>Valor</th><th>Vencimento</th><th>Dias restantes</th><th>Pagamento</th><th>Automação</th><th>Ação</th></tr>
+                </thead>
+                <tbody id="pagamentos-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== PROBLEMAS ===== -->
+      <div class="view" id="view-problemas">
+        <div class="panel">
+          <div class="panel-head">
+            <h2>&#9888;&#65039; Problemas reportados pelo n8n</h2>
+            <div class="spacer"></div>
+            <span class="badge badge-blue">Recebido via webhook</span>
+          </div>
+          <div class="panel-body">
+            <div id="problemas-list"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== FUNCIONARIOS ===== -->
+      <div class="view" id="view-funcionarios">
+        <div class="grid-2">
+          <div class="panel">
+            <div class="panel-head"><h2>Cadastrar funcionário</h2></div>
+            <div class="panel-body">
+              <form onsubmit="addFuncionario(event)">
+                <div class="field">
+                  <label>Nome</label>
+                  <input id="f-nome" type="text" placeholder="Nome do funcionário" required />
+                </div>
+                <div class="field">
+                  <label>E-mail de acesso</label>
+                  <input id="f-email" type="email" placeholder="funcionario@empresa.com" required />
+                </div>
+                <div class="field">
+                  <label>Senha</label>
+                  <input id="f-senha" type="text" placeholder="Senha inicial" required />
+                </div>
+                <button class="btn btn-block" type="submit">Cadastrar acesso</button>
+              </form>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><h2>Funcionários com acesso</h2></div>
+            <div class="panel-body" style="padding:0">
+              <div class="table-wrap">
+                <table>
+                  <thead><tr><th>Nome</th><th>E-mail</th><th>Ação</th></tr></thead>
+                  <tbody id="funcionarios-body"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ================= MODAL FICHA ================= -->
+<div class="modal-overlay" id="modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-avatar" id="m-avatar">A</div>
+      <div>
+        <h2 id="m-empresa">Empresa</h2>
+        <div class="sub" id="m-contato">Contato</div>
+      </div>
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="info-row"><span class="k">Telefone</span><span class="v" id="m-tel"></span></div>
+      <div class="info-row"><span class="k">E-mail</span><span class="v" id="m-email"></span></div>
+      <div class="info-row"><span class="k">Plano</span><span class="v" id="m-plano"></span></div>
+      <div class="info-row"><span class="k">Valor mensal</span><span class="v" id="m-valor"></span></div>
+      <div class="info-row"><span class="k">Status</span><span class="v" id="m-status"></span></div>
+      <div class="info-row"><span class="k">Vencimento</span><span class="v" id="m-venc"></span></div>
+      <div class="info-row"><span class="k">Pagamento</span><span class="v" id="m-pag"></span></div>
+
+      <div class="section-title">Contato com o cliente</div>
+      <div class="modal-actions">
+        <a class="btn btn-green" id="m-wa" target="_blank">&#128241; WhatsApp</a>
+        <a class="btn btn-accent" id="m-mail">&#9993;&#65039; Enviar e-mail</a>
+      </div>
+      <div class="modal-actions" id="m-extra-actions"></div>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+/* ============ DADOS DE EXEMPLO ============ */
+const HOJE = new Date('2026-05-22');
+
+const clientes = [
+  { id:1, empresa:'Clínica Vida Plena',   contato:'Dra. Marina Souza',  tel:'5511988887777', email:'contato@vidaplena.com.br', plano:'Secretário Virtual Pro', valor:497, status:'ativo',   vencimento:'2026-06-10', pagamento:'pago' },
+  { id:2, empresa:'AutoCenter Silva',     contato:'Roberto Silva',      tel:'5511977776666', email:'roberto@autocentersilva.com', plano:'Atendimento WhatsApp', valor:297, status:'ativo',   vencimento:'2026-05-24', pagamento:'pendente' },
+  { id:3, empresa:'Estética Bella Pelle', contato:'Juliana Martins',    tel:'5511966665555', email:'juliana@bellapelle.com.br', plano:'Agenda + Leads',       valor:397, status:'ativo',   vencimento:'2026-05-20', pagamento:'pendente' },
+  { id:4, empresa:'Imobiliária Horizonte',contato:'Carlos Mendes',      tel:'5511955554444', email:'carlos@imobhorizonte.com', plano:'Captação de Leads',    valor:597, status:'ativo',   vencimento:'2026-06-02', pagamento:'pago' },
+  { id:5, empresa:'PetShop Amigo Fiel',   contato:'Fernanda Lima',      tel:'5511944443333', email:'fernanda@amigofiel.com.br', plano:'Atendimento WhatsApp', valor:297, status:'pausado', vencimento:'2026-05-15', pagamento:'inadimplente' },
+  { id:6, empresa:'Escritório Contábil RM',contato:'Ricardo Moraes',    tel:'5511933332222', email:'ricardo@contabilrm.com.br', plano:'Secretário Virtual Pro', valor:497, status:'ativo',  vencimento:'2026-05-23', pagamento:'pendente' },
+  { id:7, empresa:'Academia FitMax',      contato:'Paulo Andrade',      tel:'5511922221111', email:'paulo@fitmax.com.br', plano:'Agenda + Leads',       valor:397, status:'inativo', vencimento:'2026-04-28', pagamento:'inadimplente' },
+  { id:8, empresa:'Restaurante Sabor & Cia',contato:'Ana Beatriz Rocha',tel:'5511911110000', email:'ana@saborecia.com.br', plano:'Atendimento WhatsApp', valor:297, status:'ativo',   vencimento:'2026-06-18', pagamento:'pago' },
+];
+
+const problemas = [
+  { id:1, clienteId:5, tipo:'Workflow parado',        gravidade:'alta',  desc:'O agente parou de responder mensagens no WhatsApp desde as 09:14. Workflow com erro de execução.', quando:'Hoje, 09:14' },
+  { id:2, clienteId:2, tipo:'Falha de integração',    gravidade:'alta',  desc:'Webhook do WhatsApp retornando erro 401. Provável token expirado na API.', quando:'Hoje, 08:02' },
+  { id:3, clienteId:6, tipo:'Lentidão nas respostas', gravidade:'media', desc:'Respostas do agente demorando mais de 40s. Fila de execução acumulada no n8n.', quando:'Ontem, 17:30' },
+];
+
+let funcionarios = [
+  { id:1, nome:'Equipe Administrativa', email:'equipe@autopainel.com' },
+];
+
+/* ============ HELPERS ============ */
+const fmtBRL = v => 'R$ ' + v.toLocaleString('pt-BR');
+const fmtData = iso => { const d = new Date(iso+'T00:00:00'); return d.toLocaleDateString('pt-BR'); };
+const iniciais = nome => nome.trim().charAt(0).toUpperCase();
+
+function diasRestantes(iso){
+  const d = new Date(iso+'T00:00:00');
+  return Math.round((d - HOJE) / 86400000);
+}
+
+// Retorna {texto, classe, badge} sobre o vencimento
+function situacaoVencimento(cli){
+  const dias = diasRestantes(cli.vencimento);
+  if (cli.pagamento === 'pago')
+    return { texto:'Em dia', classe:'days-ok', dias };
+  if (dias > 3)
+    return { texto:dias+' dias p/ vencer', classe:'days-ok', dias };
+  if (dias >= 0)
+    return { texto:dias===0?'Vence hoje':dias+' dias p/ vencer', classe:'days-warn', dias };
+  if (dias >= -3)
+    return { texto:'Tolerância: '+(3+dias)+' dia(s)', classe:'days-warn', dias };
+  return { texto:'Expirado há '+Math.abs(dias)+' dias', classe:'days-late', dias };
+}
+
+function badgeStatus(status){
+  const map = {
+    ativo:   '<span class="badge badge-green">Ativo</span>',
+    inativo: '<span class="badge badge-gray">Inativo</span>',
+    pausado: '<span class="badge badge-red">Pausado</span>',
+  };
+  return map[status] || status;
+}
+function badgePagamento(pag){
+  const map = {
+    pago:         '<span class="badge badge-green">Pago</span>',
+    pendente:     '<span class="badge badge-yellow">Aguardando</span>',
+    inadimplente: '<span class="badge badge-red">Inadimplente</span>',
+  };
+  return map[pag] || pag;
+}
+
+function msgWhatsApp(cli){
+  const txt = 'Olá '+cli.contato+', tudo bem? Aqui é da equipe AutoPainel. '+
+    'Passando para lembrar que a fatura do seu pacote "'+cli.plano+'" vence em '+fmtData(cli.vencimento)+'. '+
+    'Mantenha em dia para que seu agente virtual continue funcionando sem interrupções. Qualquer dúvida, estamos à disposição!';
+  return 'https://wa.me/'+cli.tel+'?text='+encodeURIComponent(txt);
+}
+function linkEmail(cli){
+  const assunto = 'Lembrete de vencimento — '+cli.empresa;
+  const corpo = 'Olá '+cli.contato+',\n\n'+
+    'Passando para lembrar que a fatura do seu pacote "'+cli.plano+'" vence em '+fmtData(cli.vencimento)+'.\n'+
+    'Mantenha o pagamento em dia para que seu agente virtual continue funcionando sem interrupções.\n\n'+
+    'Qualquer dúvida, estamos à disposição.\n\nEquipe AutoPainel';
+  return 'mailto:'+cli.email+'?subject='+encodeURIComponent(assunto)+'&body='+encodeURIComponent(corpo);
+}
+
+/* ============ LOGIN ============ */
+function doLogin(e){
+  e.preventDefault();
+  const email = document.getElementById('login-email').value;
+  document.getElementById('foot-email').textContent = email;
+  const f = funcionarios.find(x => x.email === email);
+  document.getElementById('foot-name').textContent = f ? f.nome : 'Funcionário';
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app').classList.add('active');
+  render();
+}
+function logout(){
+  document.getElementById('app').classList.remove('active');
+  document.getElementById('login-screen').style.display = 'flex';
+}
+
+/* ============ NAVEGAÇÃO ============ */
+const titulos = { dashboard:'Dashboard', clientes:'Clientes', pagamentos:'Pagamentos', problemas:'Problemas', funcionarios:'Funcionários' };
+function go(view){
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById('view-'+view).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.toggle('active', n.dataset.view===view));
+  document.getElementById('page-title').textContent = titulos[view];
+  document.getElementById('sidebar').classList.remove('open');
+}
+
+/* ============ RENDER ============ */
+function render(){
+  document.getElementById('today-label').textContent = HOJE.toLocaleDateString('pt-BR', { day:'2-digit', month:'long', year:'numeric' });
+  renderDashboard();
+  renderClientes();
+  renderPagamentos();
+  renderProblemas();
+  renderFuncionarios();
+}
+
+function renderDashboard(){
+  const ativos = clientes.filter(c => c.status==='ativo');
+  const faturamento = ativos.reduce((s,c)=>s+c.valor,0);
+  const recebido = clientes.filter(c=>c.pagamento==='pago').reduce((s,c)=>s+c.valor,0);
+  const aReceber = clientes.filter(c=>c.pagamento!=='pago').reduce((s,c)=>s+c.valor,0);
+  const totalFaturas = recebido + aReceber;
+
+  document.getElementById('kpi-faturamento').textContent = fmtBRL(faturamento);
+  document.getElementById('kpi-recebido').textContent = fmtBRL(recebido);
+  document.getElementById('kpi-receber').textContent = fmtBRL(aReceber);
+  document.getElementById('kpi-clientes').textContent = clientes.length;
+  document.getElementById('kpi-recebido-hint').textContent = clientes.filter(c=>c.pagamento==='pago').length+' faturas pagas';
+  document.getElementById('kpi-receber-hint').textContent = clientes.filter(c=>c.pagamento!=='pago').length+' faturas em aberto';
+  document.getElementById('kpi-clientes-hint').textContent = ativos.length+' ativos';
+
+  const pctR = totalFaturas ? (recebido/totalFaturas*100) : 0;
+  document.getElementById('rev-bar').innerHTML =
+    '<div class="seg-green" style="width:'+pctR+'%"></div>'+
+    '<div class="seg-orange" style="width:'+(100-pctR)+'%"></div>';
+  document.getElementById('leg-recebido').textContent = fmtBRL(recebido);
+  document.getElementById('leg-receber').textContent = fmtBRL(aReceber);
+
+  const inativos = clientes.length - ativos.length;
+  const pctA = clientes.length ? (ativos.length/clientes.length*100) : 0;
+  document.getElementById('cli-bar').innerHTML =
+    '<div class="seg-green" style="width:'+pctA+'%"></div>'+
+    '<div class="seg-orange" style="width:'+(100-pctA)+'%"></div>';
+  document.getElementById('leg-ativos').textContent = ativos.length;
+  document.getElementById('leg-inativos').textContent = inativos;
+
+  // vencimentos próximos: ordena por dias restantes
+  const proximos = [...clientes].sort((a,b)=>diasRestantes(a.vencimento)-diasRestantes(b.vencimento)).slice(0,5);
+  document.getElementById('dash-venc-body').innerHTML = proximos.map(c=>{
+    const s = situacaoVencimento(c);
+    return '<tr onclick="abrirFicha('+c.id+')" style="cursor:pointer">'+
+      '<td class="cell-empresa">'+c.empresa+'</td>'+
+      '<td>'+fmtData(c.vencimento)+'</td>'+
+      '<td><span class="days-tag '+s.classe+'">'+s.texto+'</span></td>'+
+      '<td>'+badgePagamento(c.pagamento)+'</td></tr>';
+  }).join('');
+
+  document.getElementById('prob-pill').textContent = problemas.length;
+}
+
+let cliTab = 'todos';
+function setCliTab(tab, el){
+  cliTab = tab;
+  document.querySelectorAll('#cli-tabs .tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  renderClientes();
+}
+function renderClientes(){
+  let lista = clientes;
+  if (cliTab==='ativo')   lista = clientes.filter(c=>c.status==='ativo');
+  if (cliTab==='inativo') lista = clientes.filter(c=>c.status!=='ativo');
+  const body = document.getElementById('clientes-body');
+  if (!lista.length){ body.innerHTML = '<tr><td colspan="6"><div class="empty">Nenhum cliente nesta categoria.</div></td></tr>'; return; }
+  body.innerHTML = lista.map(c=>{
+    return '<tr>'+
+      '<td class="cell-empresa" style="cursor:pointer" onclick="abrirFicha('+c.id+')">'+c.empresa+'</td>'+
+      '<td>'+c.contato+'<div class="cell-sub">'+c.tel.replace(/^55/,'')+'</div></td>'+
+      '<td>'+c.plano+'</td>'+
+      '<td>'+badgeStatus(c.status)+'</td>'+
+      '<td>'+fmtData(c.vencimento)+'</td>'+
+      '<td><div class="icon-actions">'+
+        '<a class="icon-btn wa" href="'+msgWhatsApp(c)+'" target="_blank" title="WhatsApp">&#128241;</a>'+
+        '<a class="icon-btn mail" href="'+linkEmail(c)+'" title="E-mail">&#9993;&#65039;</a>'+
+        '<button class="icon-btn" onclick="abrirFicha('+c.id+')" title="Ver ficha">&#128196;</button>'+
+      '</div></td></tr>';
+  }).join('');
+}
+
+function renderPagamentos(){
+  document.getElementById('pg-emdia').textContent = clientes.filter(c=>c.pagamento==='pago').length;
+  document.getElementById('pg-pendente').textContent = clientes.filter(c=>c.pagamento==='pendente').length;
+  document.getElementById('pg-inadimplente').textContent = clientes.filter(c=>c.pagamento==='inadimplente').length;
+
+  const body = document.getElementById('pagamentos-body');
+  body.innerHTML = clientes.map(c=>{
+    const s = situacaoVencimento(c);
+    const expirado = s.dias < -3 && c.pagamento!=='pago';
+    let acao;
+    if (c.status==='pausado'){
+      acao = '<button class="btn btn-green btn-sm" onclick="reativar('+c.id+')">Reativar</button>';
+    } else if (expirado || c.pagamento==='inadimplente'){
+      acao = '<button class="btn btn-red btn-sm" onclick="pausar('+c.id+')">Pausar n8n</button>';
+    } else {
+      acao = '<button class="btn btn-ghost btn-sm" onclick="pausar('+c.id+')">Pausar n8n</button>';
+    }
+    const autom = c.status==='pausado'
+      ? '<span class="badge badge-red">Desligada</span>'
+      : '<span class="badge badge-green">Ativa</span>';
+    return '<tr>'+
+      '<td class="cell-empresa" style="cursor:pointer" onclick="abrirFicha('+c.id+')">'+c.empresa+'</td>'+
+      '<td>'+fmtBRL(c.valor)+'</td>'+
+      '<td>'+fmtData(c.vencimento)+'</td>'+
+      '<td><span class="days-tag '+s.classe+'">'+s.texto+'</span></td>'+
+      '<td>'+badgePagamento(c.pagamento)+'</td>'+
+      '<td>'+autom+'</td>'+
+      '<td>'+acao+'</td></tr>';
+  }).join('');
+}
+
+function renderProblemas(){
+  const list = document.getElementById('problemas-list');
+  if (!problemas.length){
+    list.innerHTML = '<div class="empty"><span class="big">&#9989;</span>Nenhum problema reportado. Todas as automações estão funcionando.</div>';
+    return;
+  }
+  list.innerHTML = problemas.map(p=>{
+    const c = clientes.find(x=>x.id===p.clienteId);
+    const sev = p.gravidade==='alta' ? '' : 'sev-medium';
+    const sevBadge = p.gravidade==='alta'
+      ? '<span class="badge badge-red">Grave</span>'
+      : '<span class="badge badge-yellow">Moderado</span>';
+    return '<div class="prob-card '+sev+'">'+
+      '<div class="prob-ico">&#9888;&#65039;</div>'+
+      '<div class="prob-body">'+
+        '<h3>'+c.empresa+' &nbsp;'+sevBadge+'</h3>'+
+        '<div class="meta">'+p.tipo+' &middot; '+p.quando+'</div>'+
+        '<div class="desc">'+p.desc+'</div>'+
+      '</div>'+
+      '<div class="prob-actions">'+
+        '<button class="btn btn-accent btn-sm" onclick="encaminhar('+p.id+')">Encaminhar equipe</button>'+
+        '<button class="btn btn-ghost btn-sm" onclick="abrirFicha('+c.id+')">Ver cliente</button>'+
+      '</div>'+
+    '</div>';
+  }).join('');
+}
+
+function renderFuncionarios(){
+  document.getElementById('funcionarios-body').innerHTML = funcionarios.map(f=>
+    '<tr><td class="cell-empresa">'+f.nome+'</td><td>'+f.email+'</td>'+
+    '<td><button class="btn btn-ghost btn-sm" onclick="removerFuncionario('+f.id+')">Remover</button></td></tr>'
+  ).join('');
+}
+
+/* ============ AÇÕES ============ */
+function abrirFicha(id){
+  const c = clientes.find(x=>x.id===id);
+  document.getElementById('m-avatar').textContent = iniciais(c.empresa);
+  document.getElementById('m-empresa').textContent = c.empresa;
+  document.getElementById('m-contato').textContent = c.contato;
+  document.getElementById('m-tel').textContent = '+'+c.tel.replace(/^55/,'55 ');
+  document.getElementById('m-email').textContent = c.email;
+  document.getElementById('m-plano').textContent = c.plano;
+  document.getElementById('m-valor').textContent = fmtBRL(c.valor)+' / mês';
+  document.getElementById('m-status').innerHTML = badgeStatus(c.status);
+  document.getElementById('m-venc').textContent = fmtData(c.vencimento);
+  document.getElementById('m-pag').innerHTML = badgePagamento(c.pagamento);
+  document.getElementById('m-wa').href = msgWhatsApp(c);
+  document.getElementById('m-mail').href = linkEmail(c);
+
+  const extra = document.getElementById('m-extra-actions');
+  if (c.status==='pausado'){
+    extra.innerHTML = '<button class="btn btn-green" onclick="reativar('+c.id+')">&#9654;&#65039; Reativar automação</button>';
+  } else {
+    extra.innerHTML = '<button class="btn btn-red" onclick="pausar('+c.id+')">&#9209;&#65039; Pausar automação (n8n)</button>';
+  }
+  document.getElementById('modal').classList.add('active');
+}
+function closeModal(){ document.getElementById('modal').classList.remove('active'); }
+
+function pausar(id){
+  const c = clientes.find(x=>x.id===id);
+  c.status = 'pausado';
+  closeModal();
+  render();
+  toast('Automação de '+c.empresa+' pausada (simulação — n8n não foi chamado).');
+}
+function reativar(id){
+  const c = clientes.find(x=>x.id===id);
+  c.status = 'ativo';
+  closeModal();
+  render();
+  toast('Automação de '+c.empresa+' reativada (simulação).');
+}
+function encaminhar(pid){
+  const p = problemas.find(x=>x.id===pid);
+  const c = clientes.find(x=>x.id===p.clienteId);
+  toast('Problema de '+c.empresa+' encaminhado para a equipe técnica (simulação).');
+}
+function addFuncionario(e){
+  e.preventDefault();
+  const nome = document.getElementById('f-nome').value;
+  const email = document.getElementById('f-email').value;
+  funcionarios.push({ id:Date.now(), nome, email });
+  document.getElementById('f-nome').value='';
+  document.getElementById('f-email').value='';
+  document.getElementById('f-senha').value='';
+  renderFuncionarios();
+  toast('Funcionário "'+nome+'" cadastrado. Já pode acessar o sistema.');
+}
+function removerFuncionario(id){
+  funcionarios = funcionarios.filter(f=>f.id!==id);
+  renderFuncionarios();
+  toast('Acesso removido.');
+}
+
+let toastTimer;
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove('show'), 3400);
+}
+</script>
+</body>
+</html>
