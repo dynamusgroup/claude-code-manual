@@ -8,7 +8,14 @@ ser aberto no navegador e usado como referência para o **protótipo no Figma**.
 
 ## Como abrir
 
-Não há build, bundler nem dependências. Basta abrir o arquivo no navegador:
+**Forma mais fácil (recomendada):** abra o arquivo único e autossuficiente, com
+HTML, CSS e JS embutidos — funciona com duplo-clique, sem servidor:
+
+```
+biblia24h-app.html   (na raiz do repositório)
+```
+
+Ou, a versão modular (vários arquivos):
 
 ```
 biblia24h/index.html
