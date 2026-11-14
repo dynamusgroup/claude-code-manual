@@ -1,0 +1,1 @@
+board_estilo.html + frames de cada técnica (gerado pelo agente).

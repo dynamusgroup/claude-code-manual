@@ -51,6 +51,7 @@ Além do manual, o repositório guarda skills do Claude Code para criar vídeos 
 
 | Skill | Uso |
 |---|---|
+| `minimal-premium-edit` | **agente de edição Minimal Premium** (Guia Claude Editor 2026): briefing, referências, plano aprovado antes do render, Remotion, export Premiere; pasta-modelo em `editor-minimal/` |
 | `video-ia-pipeline` | orquestra o fluxo (Prepare → Peça → Revise → Reutilize) + scripts testados (`cut_silence.py`, `make_captions.py`, `render_scene.js`, `compose.py`) |
 | `video-estilo-simulacao-persona` | estilo C1: orador em cartão, cenários por profissão, props 3D |
 | `video-estilo-ui-dark-motion` | estilo C2: UI escura, título condensado com coral |

@@ -1,0 +1,2 @@
+O agente empacotado vive em  .claude/skills/minimal-premium-edit/  (regras, scripts e modelo de animação Remotion),
+para o Claude Code descobri-lo automaticamente. Abra SKILL.md para o fluxo completo e references/prompt-mestre.md para o prompt-mestre.

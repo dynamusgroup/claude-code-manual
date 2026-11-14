@@ -1,0 +1,7 @@
+.claude/skills/minimal-premium-edit/.venv/
+.claude/skills/minimal-premium-edit/remotion/node_modules/
+.claude/skills/minimal-premium-edit/remotion/out/
+*.pyc
+__pycache__/
+editor-minimal/**/brutos/*.mp4
+editor-minimal/**/renders/*
