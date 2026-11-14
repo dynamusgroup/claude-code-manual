@@ -1,0 +1,134 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Lane01 · estilo C2</title>
+<style>
+@font-face{font-family:Oswald;src:url(fonts/oswald-latin-700-normal.woff2);font-weight:700}
+@font-face{font-family:Manrope;src:url(fonts/manrope-latin-700-normal.woff2);font-weight:700}
+@font-face{font-family:Manrope;src:url(fonts/manrope-latin-800-normal.woff2);font-weight:800}
+:root{--ink:#F4EFE9;--muted:#8E8795;--coral:#DE6A4C;--card:#17141B;--line:#ffffff1f}
+*{box-sizing:border-box;margin:0}
+html,body{width:1080px;height:1920px;overflow:hidden;background:transparent;font-family:Manrope,sans-serif}
+#stage{position:relative;width:1080px;height:1920px}
+.abs{position:absolute}
+#kicker{left:0;right:0;top:92px;text-align:center;font:700 30px/1 Manrope;letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
+#title{left:40px;right:40px;top:140px;height:170px;display:flex;align-items:center;justify-content:center;white-space:nowrap;font:700 128px/1.05 Oswald;text-transform:uppercase;color:var(--ink)}
+#title .c{color:var(--coral)}
+.panel{left:120px;top:345px;width:840px;height:395px;border-radius:30px;background:var(--card);border:1px solid var(--line);box-shadow:0 30px 70px rgba(0,0,0,.55);overflow:hidden}
+.panel.glow{box-shadow:0 30px 70px rgba(0,0,0,.55),0 0 0 2px var(--coral),0 0 40px #DE6A4C55}
+/* p1 chat */
+.hdr{position:absolute;left:34px;top:28px;display:flex;align-items:center;gap:16px;font:700 26px Manrope;color:var(--muted)}
+.av{width:46px;height:46px;border-radius:50%;background:var(--coral);display:grid;place-items:center;color:#fff;font:700 24px Oswald}
+.dots i{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--muted);margin-left:6px}
+.bubble{position:absolute;left:34px;right:34px;top:100px;padding:28px 32px;border-radius:26px;background:#221E29;border:2px solid var(--coral);box-shadow:0 0 36px #DE6A4C44;font:700 44px/1.3 Manrope;color:#fff;min-height:240px}
+.cur{display:inline-block;width:4px;height:44px;background:var(--coral);vertical-align:-8px;margin-left:4px}
+/* captions */
+#cap{left:72px;width:936px;top:1395px;height:120px;display:flex;align-items:center;justify-content:center;text-align:center;font:800 58px/1.1 Manrope;color:#fff;text-shadow:0 3px 18px rgba(0,0,0,.75),0 0 3px rgba(0,0,0,.8)}
+#cap .k{color:var(--coral)}
+#cap .pill{display:inline-block;padding:12px 32px 16px;border-radius:28px;background:rgba(16,13,18,.80);border:1px solid #ffffff14;text-shadow:none}
+</style></head><body><div id="stage">
+<div id="kicker" class="abs"></div>
+<div id="title" class="abs"></div>
+
+<div id="p1" class="abs panel">
+  <div class="hdr"><div class="av">?</div><span>mensagem</span><span class="dots" id="dots"><i></i><i></i><i></i></span></div>
+  <div class="bubble"><span id="typed"></span><span class="cur" id="cur"></span></div>
+</div>
+
+<div id="p2" class="abs panel">
+  <svg width="840" height="395" viewBox="0 0 840 395">
+    <g id="rings" fill="none" stroke="#DE6A4C" stroke-width="3"><circle cx="420" cy="198" r="100"/><circle cx="420" cy="198" r="100"/><circle cx="420" cy="198" r="100"/></g>
+    <circle cx="420" cy="198" r="92" fill="#221E29" stroke="#DE6A4C" stroke-width="4"/>
+    <text x="420" y="246" text-anchor="middle" fill="#DE6A4C" style="font:700 150px Oswald">?</text>
+  </svg>
+</div>
+
+<div id="p3" class="abs panel" style="background:linear-gradient(180deg,#1b1624,#120f18)">
+  <svg width="840" height="395" viewBox="0 0 840 395">
+    <defs><mask id="moon"><rect width="840" height="395" fill="#fff"/><circle id="bite" cx="470" cy="150" r="78" fill="#000"/></mask></defs>
+    <rect x="250" y="40" width="340" height="320" rx="14" fill="none" stroke="#ffffff22" stroke-width="3"/>
+    <line x1="420" y1="40" x2="420" y2="360" stroke="#ffffff18" stroke-width="3"/><line x1="250" y1="200" x2="590" y2="200" stroke="#ffffff18" stroke-width="3"/>
+    <circle cx="420" cy="165" r="78" fill="#DE6A4C" mask="url(#moon)"/>
+    <g id="stars" fill="#fff"></g>
+  </svg>
+</div>
+
+<div id="p4" class="abs panel">
+  <div class="abs" id="post" style="left:34px;top:30px;right:34px;bottom:30px">
+    <div class="abs" style="left:0;top:0;width:330px;height:335px;border-radius:22px;background:linear-gradient(145deg,#DE6A4C,#7a2e5a);display:grid;place-items:center">
+      <svg width="170" height="170" viewBox="0 0 170 170" fill="none" stroke="#fff" stroke-width="9" stroke-linejoin="round"><circle cx="85" cy="108" r="40"/><path d="M62 52l23-30 23 30-23 14z" fill="#ffffff22"/></svg>
+    </div>
+    <div class="abs" style="left:365px;top:6px;right:0">
+      <div style="display:flex;align-items:center;gap:16px;font:700 30px Manrope;color:#fff"><div class="av" style="width:56px;height:56px">A</div><div>amiga<div style="font:700 22px Manrope;color:var(--muted)">agora</div></div></div>
+      <div id="said" style="margin-top:26px;font:800 44px/1.15 Manrope;color:#fff">Ela disse <span style="color:var(--coral)">sim</span></div>
+      <div style="margin-top:26px;display:flex;align-items:center;gap:14px;font:700 34px Manrope;color:#fff">
+        <svg id="heart" width="46" height="46" viewBox="0 0 24 24"><path d="M12 21s-8-5.2-8-11a4.6 4.6 0 0 1 8-3 4.6 4.6 0 0 1 8 3c0 5.800-8 11-8 11z" fill="#DE6A4C"/></svg><span id="likes">0</span>
+      </div>
+      <div style="margin-top:22px;height:14px;width:300px;border-radius:7px;background:#ffffff1a"></div>
+      <div style="margin-top:12px;height:14px;width:210px;border-radius:7px;background:#ffffff12"></div>
+    </div>
+  </div>
+</div>
+<div id="cap" class="abs"></div>
+</div>
+<script>
+const WORDS = [{"w": "Eu", "s": 0.0, "e": 0.62}, {"w": "quero", "s": 0.62, "e": 0.8}, {"w": "te", "s": 0.8, "e": 0.94}, {"w": "fazer", "s": 0.94, "e": 1.2}, {"w": "uma", "s": 1.2, "e": 1.4}, {"w": "pergunta", "s": 1.4, "e": 1.9}, {"w": "muito", "s": 1.9, "e": 2.34}, {"w": "pessoal,", "s": 2.34, "e": 2.86}, {"w": "quando", "s": 3.52, "e": 3.76}, {"w": "foi", "s": 3.76, "e": 3.96}, {"w": "a", "s": 3.96, "e": 4.06}, {"w": "última", "s": 4.06, "e": 4.34}, {"w": "vez", "s": 4.34, "e": 4.78}, {"w": "que", "s": 4.78, "e": 5.0}, {"w": "você", "s": 5.0, "e": 5.24}, {"w": "chorou", "s": 5.24, "e": 5.8}, {"w": "em", "s": 5.8, "e": 5.92}, {"w": "seu", "s": 5.92, "e": 6.1}, {"w": "quarto", "s": 6.1, "e": 6.52}, {"w": "depois", "s": 6.52, "e": 6.98}, {"w": "de", "s": 6.98, "e": 7.36}, {"w": "mais", "s": 7.36, "e": 7.84}, {"w": "uma", "s": 7.84, "e": 8.16}, {"w": "amiga", "s": 8.16, "e": 8.52}, {"w": "anunciar", "s": 8.52, "e": 9.18}, {"w": "noivado", "s": 9.18, "e": 9.78}, {"w": "no", "s": 9.78, "e": 9.92}, {"w": "Instagram?", "s": 9.92, "e": 10.2}];
+const clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x));
+const OUT=x=>1-Math.pow(1-clamp(x),4);
+const prog=(t,at,d=.35)=>OUT((t-at)/d);
+const $=id=>document.getElementById(id);
+
+// ---- eventos de kicker / título (o último cujo "at" já passou) ----
+const KICK=[{at:1.20,t:'uma pergunta'},{at:3.52,t:'quando foi'},{at:5.92,t:'em seu'},{at:7.36,t:'depois de mais uma'},{at:9.18,t:'anunciar'}];
+const TITLE=[
+ {at:1.90,end:3.46,p:[['muito',0],['pessoal',1]]},
+ {at:3.96,end:4.98,p:[['a última',0],['vez',1]]},
+ {at:5.00,end:5.78,p:[['você',0],['chorou?',1]]},
+ {at:6.10,end:7.30,p:[['quarto',1]]},
+ {at:7.84,end:9.10,p:[['uma',0],['amiga',1]]},
+ {at:9.18,end:10.87,p:[['noivado',1],['no instagram',0]]}];
+const KEND=[3.46,5.78,7.34,9.14,10.87];
+// ---- painéis ----
+const PAN=[{id:'p1',s:0.0,e:3.46},{id:'p2',s:3.52,e:5.78},{id:'p3',s:5.80,e:7.34},{id:'p4',s:7.36,e:10.87}];
+// ---- legenda: grupos de até 3 palavras; palavras-chave em coral ----
+const KW=new Set(['pessoal','chorou','quarto','amiga','noivado','instagram']);
+const GROUPS=[];{let cur=[];WORDS.forEach((w,i)=>{if(cur.length&&(cur.length>=3||w.s-cur[cur.length-1].e>0.35||/[.?!,]$/.test(cur[cur.length-1].w))){GROUPS.push(cur);cur=[]}cur.push(w);if(i===WORDS.length-1)GROUPS.push(cur)})}
+const stars=$('stars');for(let i=0;i<14;i++){const c=document.createElementNS('http://www.w3.org/2000/svg','circle');c.setAttribute('cx',60+((i*137)%720));c.setAttribute('cy',30+((i*83)%300));c.setAttribute('r',2+(i%3));c.dataset.i=i;stars.appendChild(c)}
+// ajusta o título para caber em 900 px (medido uma vez por texto)
+function fitTitle(){const el=$('title');let fs=128;el.style.fontSize=fs+'px';while(el.scrollWidth>el.clientWidth&&fs>60){fs-=4;el.style.fontSize=fs+'px'}}
+
+let lastTitle=-2,lastKick=-2,lastCap=-2;
+window.seek=function(t){
+  // kicker
+  let ki=-1;KICK.forEach((k,i)=>{if(t>=k.at&&t<KEND[i])ki=i});
+  const kEl=$('kicker');
+  if(ki!==lastKick){kEl.textContent=ki>=0?KICK[ki].t:'';lastKick=ki}
+  const kp=ki>=0?prog(t,KICK[ki].at,.35):0;
+  kEl.style.opacity=kp*(ki>=0?1-prog(t,KEND[ki]-.15,.15):0);kEl.style.transform=`translateY(${(1-kp)*14}px)`;
+  // título
+  let ti=-1;TITLE.forEach((x,i)=>{if(t>=x.at&&t<x.end)ti=i});
+  const tEl=$('title');
+  if(ti!==lastTitle){tEl.innerHTML=ti>=0?TITLE[ti].p.map(([w,c])=>`<span class="${c?'c':''}">${w}</span>`).join('&nbsp;&nbsp;'):'';if(ti>=0)fitTitle();lastTitle=ti}
+  if(ti>=0){const x=TITLE[ti],p=prog(t,x.at,.35),o=1-prog(t,x.end-.14,.14);
+    tEl.style.opacity=p*o;tEl.style.transform=`translateY(${(1-p)*34}px)`;tEl.style.filter=`blur(${(1-p)*9}px)`}else{tEl.style.opacity=0}
+  // painéis
+  PAN.forEach(p=>{const el=$(p.id),vis=t>=p.s-.001&&t<p.e;el.style.display=vis?'block':'none';if(!vis)return;
+    const a=prog(t,p.s,.35),o=1-prog(t,p.e-.16,.16);el.style.opacity=a*o;el.style.transform=`scale(${.95+.05*a})`});
+  // p1: texto digitado nas palavras faladas
+  {const shown=WORDS.filter(w=>w.s<=t&&w.s<3.46).map(w=>w.w).join(' ');$('typed').textContent=shown;
+   $('cur').style.opacity=(Math.floor(t*2.6)%2===0)?1:.15;
+   [...$('dots').children].forEach((d,i)=>d.style.opacity=.25+.75*(0.5+0.5*Math.sin(t*7-i*0.9)))}
+  // p2: anéis pulsando a partir do instante da pergunta
+  {[...$('rings').children].forEach((c,i)=>{const u=((t-3.52)*0.9+i/3)%1;c.setAttribute('r',100+u*190);c.setAttribute('opacity',(1-u)*.8)})}
+  // p3: estrelas piscando; lua entra
+  {[...$('stars').children].forEach(c=>{const i=+c.dataset.i;c.setAttribute('opacity',.25+.75*(0.5+0.5*Math.sin(t*3+i*1.7)))});}
+  // p4: curtidas sobem; borda coral acende em "noivado" (9,18 s)
+  {const L=Math.round(2317*OUT((t-7.80)/2.4));$('likes').textContent=L.toLocaleString('pt-BR');
+   const gl=t>=9.18;$('p4').classList.toggle('glow',gl);
+   $('heart').style.transform=`scale(${1+.25*Math.max(0,1-Math.abs((t-9.2)*4))})`;
+   $('said').style.opacity=prog(t,8.16,.4);$('post').style.opacity=1}
+  // legenda
+  let gi=-1;GROUPS.forEach((g,i)=>{if(t>=g[0].s-.04&&t<g[g.length-1].e+.18)gi=i});
+  const cEl=$('cap');
+  if(gi!==lastCap){cEl.innerHTML=gi>=0?'<div class="pill">'+GROUPS[gi].map(w=>{const kw=KW.has(w.w.toLowerCase().replace(/[?,.!]/g,''));return `<span class="${kw?'k':''}">${w.w}</span>`}).join('&nbsp;')+'</div>':'';lastCap=gi}
+  if(gi>=0){const g=GROUPS[gi],p=prog(t,g[0].s,.14);cEl.style.opacity=p;cEl.style.transform=`scale(${.92+.08*p})`}else cEl.style.opacity=0;
+};
+window.seek(0);
+</script></body></html>

@@ -12,7 +12,7 @@ p.add_argument('--layer'); p.add_argument('--ass'); p.add_argument('--glow'); p.
 a = p.parse_args()
 x, y, w, h = [int(v) for v in a.card.split(',')]; r = a.radius
 inputs = ['-i', a.src]
-if os.path.exists(a.bg): inputs += ['-loop', '1', '-i', a.bg]; bg = '[1:v]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,setsar=1[bg]'
+if os.path.exists(a.bg): inputs += ['-loop', '1', '-framerate', '30', '-i', a.bg]; bg = '[1:v]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,setsar=1[bg]'
 else: inputs += ['-f', 'lavfi', '-i', f'color=c={a.bg.replace("#","0x")}:s=1080x1920:r=30']; bg = '[1:v]setsar=1[bg]'
 n = 2
 if a.layer: inputs += ['-i', a.layer]; layer_idx = n; n += 1
