@@ -44,3 +44,17 @@ All user-visible text is in **Brazilian Portuguese (pt-BR)**. Keep new content i
 ## No Build Steps
 
 Open `manual-claude-code.html` directly in a browser to preview. There is no server, bundler, or test suite.
+
+## Skills de vídeo (`.claude/skills/`)
+
+Além do manual, o repositório guarda skills do Claude Code para criar vídeos verticais 9:16 no estilo de referência (método "Máquina de Edição IA"). Não fazem parte do HTML do manual e não alteram a regra "sem build".
+
+| Skill | Uso |
+|---|---|
+| `video-ia-pipeline` | orquestra o fluxo (Prepare → Peça → Revise → Reutilize) + scripts testados (`cut_silence.py`, `make_captions.py`, `render_scene.js`, `compose.py`) |
+| `video-estilo-simulacao-persona` | estilo C1: orador em cartão, cenários por profissão, props 3D |
+| `video-estilo-ui-dark-motion` | estilo C2: UI escura, título condensado com coral |
+| `video-estilo-cenarios-contador` | estilo C3: contador "editando NN/12", troca de cenário |
+| `video-estilo-timeline-creme` | estilo C4: explainer creme + terracota com linha do tempo |
+| `video-catalogo-10s` | 10 técnicas de clipes de até 10 s + 5 acabamentos |
+| `design-system-edicaomia` | tokens e padrões do site (roxo editorial, Syne + Manrope) |

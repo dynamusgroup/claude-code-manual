@@ -1,0 +1,37 @@
+/* Design system "roxo editorial" — extraído do CSS do site de referência (visual.css sobre style.css). */
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&family=Syne:wght@700;800&display=swap');
+:root{
+  --bg:#0b0716;           /* fundo */
+  --panel:#120c22;        /* seções alternadas / cartões */
+  --paper:#f5f0ff;        /* texto principal */
+  --muted:#b4a9c6;        /* texto secundário */
+  --line:#ffffff20;       /* bordas */
+  --accent:#9759ff;       /* roxo de marca */
+  --accent-soft:#c7a7ff;  /* destaques, eyebrow, ícones (no site chama --green por herança) */
+  --accent-light:#d3b4ff; /* palavra em <em> nos títulos */
+  --eyebrow:#b68bea;
+  --radius:24px;
+  --grad-btn:linear-gradient(120deg,#9c5af3,#733acd);
+  --grad-btn-hover:linear-gradient(120deg,#aa6eff,#8a4ae9);
+  --glow:0 6px 35px #8839e933, inset 0 1px 0 #ffffff3c;
+  --bg-aura:radial-gradient(ellipse 70% 700px at 88% 270px,#3a196151,transparent 90%);
+  --font-head:Syne,Arial,sans-serif;     /* 700/800, tracking -.065em nos H1 */
+  --font-body:Manrope,Arial,sans-serif;  /* 400/600/700 */
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg-aura),var(--bg);color:var(--paper);font:400 16px/1.7 var(--font-body);overflow-x:clip}
+h1,h2{font-family:var(--font-head);font-weight:800;letter-spacing:-.065em;line-height:1.07;margin:0 0 23px}
+h1{font-size:clamp(45px,4.75vw,65px)} h2{font-size:clamp(34px,4vw,52px)}
+h1 em,h2 em{font-style:normal;font-weight:700;letter-spacing:-.04em;color:var(--accent-light)}
+.eyebrow{display:block;font:700 10px/1.6 var(--font-body);letter-spacing:.15em;text-transform:uppercase;color:var(--eyebrow)}
+.live-dot{display:inline-block;width:6px;height:6px;border-radius:100%;background:#d3b4ff;box-shadow:0 0 15px #b78bff;margin-right:8px;vertical-align:middle}
+.wrap{width:min(1200px,calc(100% - 80px));margin:auto}
+.button{display:inline-flex;align-items:center;gap:27px;min-height:59px;padding:19px 24px;border:0;border-radius:12px;color:#fff;cursor:pointer;text-decoration:none;
+  background:var(--grad-btn);box-shadow:var(--glow);font:700 14px/1.4 var(--font-body);transition:transform .2s,box-shadow .2s}
+.button:hover{background:var(--grad-btn-hover);box-shadow:0 8px 42px #8839e955;transform:translateY(-3px)}
+.chip{display:inline-block;padding:7px 11px;border:1px solid #ffffff1c;border-radius:6px;background:#ffffff04;font-size:10px;color:#dcd1ee}
+.pill-nav{border:1px solid #ffffff23;border-radius:100px;padding:10px 18px;font-size:12px;text-decoration:none;color:inherit}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:36px}
+details{border-top:1px solid var(--line)} summary{cursor:pointer;list-style:none;font-weight:700;padding:22px 0;display:flex;justify-content:space-between}
+summary i{font-style:normal;color:var(--accent-soft);font-size:22px} details[open] summary i{transform:rotate(45deg)}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
