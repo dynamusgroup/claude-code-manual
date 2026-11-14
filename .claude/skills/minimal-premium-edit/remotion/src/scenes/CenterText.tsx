@@ -4,10 +4,10 @@ import {Theme} from '../theme';
 import {prog, outp} from '../anim';
 import {Grain, PaperGrid, useT} from './common';
 
-export type CenterTextProps = {text: string; tone?: 'paper' | 'accent'; dur: number};
+export type CenterTextProps = {text: string; tone?: 'paper' | 'accent'; dur: number; /** tempo (s, relativo ao início da cena) em que cada palavra é FALADA; sem isso, 0,12 s entre palavras */ times?: number[]};
 
 /** 6 · Texto central. Fundo papel ou na cor da paleta, texturizado, aspas grandes, a frase-tese no meio. */
-export const CenterText: React.FC<CenterTextProps & {theme: Theme}> = ({text, tone = 'paper', dur, theme}) => {
+export const CenterText: React.FC<CenterTextProps & {theme: Theme}> = ({text, tone = 'paper', dur, theme, times}) => {
   const {t} = useT();
   const onAccent = tone === 'accent';
   const fg = onAccent ? '#FFFFFF' : theme.text;
@@ -20,7 +20,7 @@ export const CenterText: React.FC<CenterTextProps & {theme: Theme}> = ({text, to
       <AbsoluteFill style={{justifyContent: 'center', padding: '0 110px'}}>
         <div style={{fontFamily: theme.serif, fontStyle: 'italic', fontWeight: 700, fontSize: 108, lineHeight: 1.12, color: fg, textAlign: 'center'}}>
           {words.map((w, i) => {
-            const p = prog(t, 0.2 + i * 0.12, 0.5);
+            const p = prog(t, times?.[i] ?? 0.2 + i * 0.12, 0.45);
             return <span key={i} style={{display: 'inline-block', marginRight: 22, opacity: p, transform: `translateY(${(1 - p) * 22}px)`}}>{w}</span>;
           })}
         </div>

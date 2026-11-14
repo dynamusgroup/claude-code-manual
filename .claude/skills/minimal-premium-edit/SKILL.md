@@ -76,6 +76,23 @@ Veja [references/revisoes-e-custos.md](references/revisoes-e-custos.md): diga o 
 ## Extras que o agente faz
 Legenda palavra por palavra (`render.mjs words`, vídeo com fundo verde ou MOV transparente) · comentários na tela (prints → verde, vertical, 7 s, desfoque/zoom, nomes e fotos borrados) · b-roll de banco gratuito (seja específico) · trilhas parecidas e livres de direitos · empacotar para outro editor.
 
+## Fonte horizontal ou de baixa resolução → 9:16
+Antes do briefing, rode `ffprobe`: se o bruto for **horizontal** (ex.: 910×512), 9:16 exige recompor. Mostre ao usuário o MESMO quadro em 3 enquadramentos e deixe escolher:
+- **A · Recorte no rosto** (padrão do estilo, permite cenas em tela cheia). Janela 9:16 = `altura × 9/16` de largura; centralize no rosto e **confira 4–5 instantes** (cabeça nunca cortada). Ampliar muito amacia a imagem (512p → 1920p = 3,75×): compense com `scale=…:flags=lanczos,unsharp=5:5:0.7:5:5:0.0,noise=alls=7:allf=t`.
+- **B · Cartão horizontal em fundo creme** (nítido, 1,19×, rosto pequeno) · **C · cartão com fundo desfocado**.
+Receita testada do `cut.mp4` (recorte + 30 fps igual à fonte + áudio a −14 LUFS):
+```bash
+ffmpeg -ss INI -to FIM -i bruto.mp4 -vf "crop=288:512:X:0,scale=1080:1920:flags=lanczos,unsharp=5:5:0.7:5:5:0.0,noise=alls=7:allf=t,fps=30,format=yuv420p" \
+  -af "highpass=f=70,afftdn=nr=8:nf=-45,loudnorm=I=-14:TP=-1.5:LRA=9" -c:v libx264 -crf 14 -c:a aac -b:a 192k cut.mp4
+```
+Mantenha o **fps da fonte** (30) no `plan.meta.fps` para não gerar trepidação. Áudio de gravação baixa (≈ −25 LUFS) sobe ~11 dB: o `afftdn` segura o chiado.
+
+## Tomadas repetidas (decupagem)
+Quando a mesma fala aparece 2×, compare por **palavra** (`transcricao.json`): pausas/travadas (>0,8 s), confiança (`p`) e tom final (pergunta × afirmação). Escolha a mais fluida e **diga o porquê** ao usuário; corte pelo início da fala (−0,15 s) e segure ~0,5 s no fim.
+
+## Ritmo em gancho curto (≈10 s)
+Priorize o rosto: 2 cenas de tipos diferentes bastam (cobertura ~50%). Cena de texto central: passe `props.times` (tempo falado de cada palavra, relativo à cena) para as palavras entrarem **no ritmo da fala**. Cena de linha: os nós usam o tempo da palavra e a linha chega em cada nó no mesmo instante; **não comece a cena muito antes do 1º nó** (tela vazia). Sem b-roll/foto do usuário não use cenas com placeholder.
+
 ## Limitações (seja transparente com o usuário)
 - O XML segue o padrão FCP7/xmeml e foi **validado estruturalmente**; abra no Premiere para confirmar a reconexão de mídia no seu computador.
 - A transcrição pode errar palavras raras e nomes: confira o plano antes do render.

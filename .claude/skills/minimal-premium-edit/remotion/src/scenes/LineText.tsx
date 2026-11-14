@@ -24,7 +24,22 @@ export const LineText: React.FC<LineTextProps & {theme: Theme}> = ({nodes, dur, 
   }
   d += ` L ${xs[n - 1] + 340} ${ys[n - 1]}`;
   const lastAt = nodes[n - 1]?.at ?? dur * 0.7;
-  const draw = interpolate(t, [0.1, Math.max(lastAt + 0.2, 0.8)], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
+  // comprimento real do caminho até cada nó (amostrando as curvas): a linha CHEGA em cada nó exatamente quando ele é falado
+  const cum: number[] = [340];
+  for (let i = 1; i < n; i++) {
+    const mx = (xs[i - 1] + xs[i]) / 2;
+    let len = 0, px = xs[i - 1], py = ys[i - 1];
+    for (let k = 1; k <= 24; k++) {
+      const u = k / 24, v = 1 - u;
+      const x = v * v * v * xs[i - 1] + 3 * v * v * u * mx + 3 * v * u * u * mx + u * u * u * xs[i];
+      const y = v * v * v * ys[i - 1] + 3 * v * v * u * ys[i - 1] + 3 * v * u * u * ys[i] + u * u * u * ys[i];
+      len += Math.hypot(x - px, y - py); px = x; py = y;
+    }
+    cum.push(cum[i - 1] + len);
+  }
+  const total = cum[n - 1] + 340;
+  const times = [0.05, ...nodes.map((nd, i) => Math.max(nd.at, 0.1 + 0.05 * (i + 1))), Math.max(lastAt, 0.3) + 0.4];
+  const draw = interpolate(t, times, [0, ...cum.map((c) => c / total), 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
   // câmera acompanha o nó ativo
   const camX = interpolate(t, nodes.map((nd) => nd.at), xs.map((x) => W / 2 - x), {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
   const fade = outp(t, dur, 0.4);
@@ -41,10 +56,12 @@ export const LineText: React.FC<LineTextProps & {theme: Theme}> = ({nodes, dur, 
           <path d={d} fill="none" stroke={theme.accent} strokeWidth={6} strokeLinecap="round" filter="url(#glow)" pathLength={1} strokeDasharray={1} strokeDashoffset={1 - draw} />
           {nodes.map((nd, i) => {
             const p = prog(t, nd.at, 0.5);
+            // o rótulo anterior some quando o próximo entra (a câmera já o está deixando para trás: nada cortado na borda)
+            const gone = nodes[i + 1] ? 1 - prog(t, nodes[i + 1].at - 0.1, 0.45) : 1;
             return (
               <g key={i} opacity={p}>
                 <circle cx={xs[i]} cy={ys[i]} r={16 + (1 - p) * 14} fill={theme.accent} filter="url(#glow)" />
-                <text x={xs[i]} y={ys[i] + (i % 2 === 0 ? -64 : 96)} textAnchor="middle" fill="#F4F1EA" style={{font: `italic 700 86px ${theme.serif}`}}>
+                <text x={xs[i]} y={ys[i] + (i % 2 === 0 ? -64 : 96)} textAnchor="middle" fill="#F4F1EA" opacity={gone} style={{font: `italic 700 86px ${theme.serif}`}}>
                   {nd.label}
                 </text>
               </g>
